@@ -9,33 +9,62 @@
   <pubdate>2020</pubdate>
  </info>
 
- <section id="about">
-  <title>About This Book</title>
-  <para>
-    This book is written for software engineers and architects who have development experience with a modern language or two and hopefully have been responsible for a nontrivial integration.  You might have even encountered an API which "felt off" or was hard to understand, and couldn't quite identify what was wrong with it.  Encountering a poorly designed API can make you question the quality of the offered product, and is analogous to a bad first date.  A good deal of the time, a first impression really can tell you all you need to know.
-  </para>
-  <para>
-    The structure of the book is to start with an explanation of a simple HTTP over TCP exchange, a brief history, and a case study which we will follow throughout the book.  Security, while a significant portion of our focus, is presented after the foundational concepts of REST.  Architectural concepts are presented with thought given to security, scaleability, and maintainability.
-  </para>
-  <para>
-    While the architect for APIs tends to be experienced back-end systems engineers, there is quite a bit of merit to enabling the front-end engineers as the designers.  Throughout this book, we present the concept of Consumer-Driven Contracts, where we place the burden on the back-end teams to develop systems which hide the complexity through a consumer friendly API.  We will hide all of the legacy, all of the history, all of the bad technology choices, behind a clean API meant to enable thin-clients to integrate to.  Our goal is fast adoption so that we can build native and browser apps for Android, iOS, desktop, and command-line consumers.  In addition, your consumers may also be other microservice apps and systems engineers.  If you find yourself as a front-end application developer, butting heads with a stubborn API architect, hopefully this book offers you some key points to reasoning why the API you're integrating to is difficult to adopt and allows for you to articulate problems with the provided API.
-  </para>
-  <para>
-    Throughout this book, we will introduce development utilities, debuggers, proxies, and command line utilities.  You'll want to have access to a BASH or ZSH terminal for access to curl and tcpdump.  As expected, you'll also want access to a modern browser with development tools, in 2020 just about any widely available browser will do.  You'll need access to the internet for reviewing the current OPEN API specification and online editors such as <uri>https://editor.swagger.io/</uri>.  You'll likely also need desktop applications for packet capture reviewing such as WireShark.  Plan to also install desktop applications such as POSTMAN and Charles Proxy.
-  </para>
-  <para>
-      For the sake of brevity, this is not really a book for software developers just getting started in their career.  Pairs programming and proper mentorship are a fundamental starting point for someone responsible for designing public facing services.  At a minimum, you probably should have a microservice or two under your belt.
-  </para>
- </section>
-
-
- <section id="body">
-  <title>Section with a title</title>
-  <para>Main body text goes here.</para>
- </section>
-
- <section id="conclusion">
-  <title>Conclusion</title>
-  <para>Exciting and inspiring conclusion goes here.</para>
- </section>
+   <section id="aboutbook">
+    <title>About This Book</title>
+    <para>
+      This book is written for software engineers and architects who have development experience with a modern language or two and hopefully have been responsible for a nontrivial integration.  You might have even encountered an API which "felt off" or was hard to understand, and couldn't quite identify what was wrong with it.  Encountering a poorly designed API can make you question the quality of the offered product, and is analogous to a bad first date.  A good deal of the time, a first impression really can tell you all you need to know.
+    </para>
+    <para>
+      The structure of the book is to start with an explanation of a simple HTTP over TCP exchange, a brief history, and a case study which we will follow throughout the book.  Security, while a significant portion of our focus, is presented after the foundational concepts of REST.  Architectural concepts are presented with thought given to security, scalability, and maintainability.
+    </para>
+    <para>
+      While the architect for APIs tends to be experienced back-end systems engineers, there is quite a bit of merit to assigning the front-end engineers as the designers.  Throughout this book, we present the concept of Consumer-Driven Contracts, where we place the burden on the back-end teams to develop systems which hide the complexity through a consumer friendly API.  We will hide all of the legacy, all of the history, all of the bad technology choices, behind a clean API meant to enable clients to quickly integrate to.  Our goal is fast adoption so that we can build native and browser apps for Android, iOS, desktop, and command-line consumers.  In addition, your consumers may also be other microservice apps and systems engineers.  If you find yourself as a front-end application developer, butting heads with a stubborn API architect, hopefully this book offers you some key points to reasoning why the API you're integrating to is difficult to adopt and allows for you to articulate problems with the provided API.
+    </para>
+    <para>
+      Throughout this book, we will introduce development utilities, debuggers, proxies, and command line utilities.  You'll want to have access to a BASH or ZSH terminal for access to curl and tcpdump.  As expected, you'll also want access to a modern browser with development tools, in 2020 just about any widely available browser will do.  You'll need access to the internet for reviewing the current OPEN API specification and online editors such as <uri>https://editor.swagger.io/</uri>.  You'll likely also need desktop applications for packet capture reviewing such as WireShark.  Plan to also install desktop applications such as POSTMAN and Charles Proxy.  Finally, I try to use containers for all of my demonstration materials, so you may as well go ahead and install the Docker command line utilities as well.
+    </para>
+    <para>
+        For the sake of brevity, this is not really a book for software developers just getting started in their career.  Pairs programming and proper mentorship are a fundamental starting point for someone responsible for designing public facing services.  At a minimum, you probably should have a microservice or two under your belt.  I learned more on my job in the first 3 months in a professional setting than I did in my 4.5 years of college.
+    </para>
+    <para>
+      One question I figure needs to be answered is "why another book on REST"?  Ultimately, this book will share a shelf with many others written on the same concept, a 20+ year old topic introduced by Roy Fielding in 2000.  I picked up a few of the higher rated REST books to figure out if it was worth the effort and can say confidently this book will fill a niche. Most REST API books are either do's or don't do's, guidelines, standards, or opinion pieces on which approach is better.  I have not encountered one that transitions from a case study into a how-to.  I have yet to uncover one that goes into depths of debugging, CORS, Basic Auth, Bearer Auth, and TLS under the same cover.  Finally, I have come across none using Open API 3.0 spec as their modeling language.  All of that said, most of my knowledge has come from encountering both good and bad APIs, a lot of Stack Overflow posts, a thorough reading of the Open API 3.0 specification, and paid professional enterprise application development experience.
+    </para>
+    <sidebar>
+      <title>Disclaimer</title>
+      <para>
+        In terms of securing your APIs, this book can't make you a security expert, but it can try to assist in building a foundational understanding.  This book intends to explain some pitfalls your are likely to encounter in your journey, the difference between authentication and authorization, issues with cookies, cross domain scripting, and more.  It is worth your time going through and reading documentation at <uri>https://owasp.org/</uri>.
+      </para>
+    </sidebar>
+   </section>
+     <section id="aboutauthor">
+      <title>About The Author</title>
+      <para>I, Zachary Calvert, am a 2004 graduate of the University of Texas at Arlington, with a Bachelor of Science in Software Engineering, summa cum laude.  I am a former member of American Mensa, no longer a paying member, and an engineer with 17 years of professional experience.  I have worked for the aviation industry at Southwest Airlines contracted through TEKsystems, intermodal transportation for BNSF contracted through HCL America, the automotive industry for Toyota contracted through Workforce Logiq, financial services for TransUnion, humbly paid for two failed S-Corps, and a smattering of other small, medium, and large sized companies.  Said in the words of my wife, I've worked on planes, trains, and automobiles.
+      </para>
+      <para>
+        What I hope grants me some credibility with the approach presented throughout this book is the fact that I've served roles in API development, DevOps, database design, application security, and client application engineering.  For API development, I've leveraged Spring Boot, NPM, and golang.  For DevOps, I'm handy with BASH, Terraform, Kubernetes, Heroku, Cloud Foundry, and trying to keep up with the ever growing technology footprint of AWS.
+      </para>
+      <para>For client applications I've developed single-page applications with ReactJS and iPad applications using Swift 5.  I even have history developing old-school WAR and EAR artifacts using Java, JSPs, and Struts on Tomcat and Oracle WebLogic.  I've designed RDBMS on Oracle, MySQL, and Postgres as well as NoSQL schemas on Cassandra and MongoDB.
+      </para>
+      <para>
+        If you've seen my resume, it is rather ridiculous.  I'm always trying to find the right balance of work/life, pay, career growth, and challenges which will keep my career technology centric and relevant.
+      </para>
+      <para>
+        I am married to a hard-working equal, a loving and multi-talented paralegal, quilter, baker, interior decorator, and mother.  We are overwhelmed parents to one overly energetic, talkative, sleepless, and busy young man who constantly challenges our sanity and patience.  We live in Texas where we enjoy summer, semi-summer, almost-not-summer, and icy-road accident gridlock fall.
+      </para>
+    </section>
+    <section>
+      <title>Brief History</title>
+      <para>
+        Diving right in, I have a tcp capture waiting for traffic on port 8080, for an nginx container running on my local machine which offers up a single index.html page at <uri>http://localhost:8080/index.html</uri>.   Ignore docker, ignore the port 8080, ignore nginx, just know that on my local machine I have a service running which works like any website does allowing for an HTTP request to come in and the server to respond with a single html page containing "hello world".
+      </para>
+     <sidebar>
+       <title>Commands</title>
+       <para>
+         You can create a simple index.html page with any text editor.  Running the packet capture can be performed from a BASH command line (such as WSL or MacOS Terminal)
+       </para>
+       <code language="shell">
+         sudo tcpdump -i eth0 -s0 -w test.pcap port 8080
+       </code>
+     </sidebar>
+   </section>
 </article>
