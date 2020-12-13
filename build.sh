@@ -1,8 +1,8 @@
 #!/bin/bash
 
-rm restful.html
-rm *.fo
-rm restful.pdf
+rm restful.html 2>/dev/null
+rm *.fo 2>/dev/null
+rm restful.pdf 2>/dev/null
 
 pandoc --from docbook --to html --output restful.html restful.xml
 # pandoc --from docbook --to latex --output restful.pdf restful.xml
