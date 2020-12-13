@@ -1,6 +1,6 @@
 <article xmlns='http://docbook.org/ns/docbook'>
  <info>
-  <title>Mode, Securing, and Modeling RESTful APIs</title>
+  <title>Designing, Modeling, and Securing RESTful APIs</title>
   <author><personname>
  <firstname>Zach</firstname>
  <surname>Calvert</surname>
@@ -9,15 +9,15 @@
   <pubdate>2020</pubdate>
  </info>
 
- <section id="target">
-  <title>Introduction</title>
+ <section id="about">
+  <title>About This Book</title>
   <para>
     This book is written for software engineers and architects who have development experience with a modern language or two and hopefully have been responsible for a nontrivial integration.  You might have even encountered an API which "felt off" or was hard to understand, and couldn't quite identify what was wrong with it.  Encountering a poorly designed API can make you question the quality of the offered product, and is analogous to a bad first date.  A good deal of the time, a first impression really can tell you all you need to know.
   </para>
   <para>
     The structure of the book is to start with an explanation of a simple HTTP over TCP exchange, a brief history, and a case study which we will follow throughout the book.  Security, while a significant portion of our focus, is presented after the foundational concepts of REST.  Architectural concepts are presented with thought given to security, scaleability, and maintainability.
   </para>
-  <<para>
+  <para>
     While the architect for APIs tends to be experienced back-end systems engineers, there is quite a bit of merit to enabling the front-end engineers as the designers.  Throughout this book, we present the concept of Consumer-Driven Contracts, where we place the burden on the back-end teams to develop systems which hide the complexity through a consumer friendly API.  We will hide all of the legacy, all of the history, all of the bad technology choices, behind a clean API meant to enable thin-clients to integrate to.  Our goal is fast adoption so that we can build native and browser apps for Android, iOS, desktop, and command-line consumers.  In addition, your consumers may also be other microservice apps and systems engineers.  If you find yourself as a front-end application developer, butting heads with a stubborn API architect, hopefully this book offers you some key points to reasoning why the API you're integrating to is difficult to adopt and allows for you to articulate problems with the provided API.
   </para>
   <para>
