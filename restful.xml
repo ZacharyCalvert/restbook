@@ -9,8 +9,11 @@
   <pubdate>2020</pubdate>
  </info>
 
-   <section id="aboutbook">
-    <title>About This Book</title>
+   <section id="preface">
+    <title>Preface</title>
+    <para>
+      Welcome to
+    </para>
     <para>
       This book is written for software engineers and architects who have development experience with a modern language or two and hopefully have been responsible for a nontrivial integration.  You might have even encountered an API which "felt off" or was hard to understand, and couldn't quite identify what was wrong with it.  Encountering a poorly designed API can make you question the quality of the offered product, and is analogous to a bad first date.  A good deal of the time, a first impression really can tell you all you need to know.
     </para>
@@ -38,7 +41,7 @@
    </section>
      <section id="aboutauthor">
       <title>About The Author</title>
-      <para>I, Zachary Calvert, am a 2004 graduate of the University of Texas at Arlington, with a Bachelor of Science in Software Engineering, summa cum laude.  I am a former member of American Mensa, no longer a paying member, and an engineer with 17 years of professional experience.  I have worked for the aviation industry at Southwest Airlines contracted through TEKsystems, intermodal transportation for BNSF contracted through HCL America, the automotive industry for Toyota contracted through Workforce Logiq, financial services for TransUnion, humbly paid for two failed S-Corps, and a smattering of other small, medium, and large sized companies.  Said in the words of my wife, I've worked on planes, trains, and automobiles.
+      <para>I, Zachary Calvert, am a 2004 graduate of the University of Texas at Arlington, with a Bachelor of Science in Software Engineering, summa cum laude.  I am a former member of American Mensa, no longer a paying member, and an engineer with 17 years of professional experience.  I have worked for the aviation industry at Southwest Airlines contracted through TEKsystems, intermodal transportation for BNSF contracted through HCL America, the automotive industry for Toyota contracted through Workforce Logiq, financial services for TransUnion, humbly paid for two failed S-Corps, and worked for a smattering of other small, medium, and large sized companies.  Said in the words of my wife, I've worked on planes, trains, and automobiles.
       </para>
       <para>
         What I hope grants me some credibility with the approach presented throughout this book is the fact that I've served roles in API development, DevOps, database design, application security, and client application engineering.  For API development, I've leveraged Spring Boot, NPM, and golang.  For DevOps, I'm handy with BASH, Terraform, Kubernetes, Heroku, Cloud Foundry, and trying to keep up with the ever growing technology footprint of AWS.
@@ -49,22 +52,66 @@
         If you've seen my resume, it is rather ridiculous.  I'm always trying to find the right balance of work/life, pay, career growth, and challenges which will keep my career technology centric and relevant.
       </para>
       <para>
-        I am married to a hard-working equal, a loving and multi-talented paralegal, quilter, baker, interior decorator, and mother.  We are overwhelmed parents to one overly energetic, talkative, sleepless, and busy young man who constantly challenges our sanity and patience.  We live in Texas where we enjoy summer, semi-summer, almost-not-summer, and icy-road accident gridlock fall.
+        I am married to a hard-working equal, a loving and multi-talented paralegal, an anthropology graduate of the University of Texas (UT), quilter, baker, interior decorator, and mother.  We are overwhelmed parents to one overly energetic, talkative, sleepless, and busy young man who constantly challenges our sanity and patience.  We live in Texas where we enjoy summer, semi-summer, almost-not-summer, and icy-road accident gridlock fall.
       </para>
     </section>
     <section>
       <title>Brief History</title>
       <para>
-        Diving right in, I have a tcp capture waiting for traffic on port 8080, for an nginx container running on my local machine which offers up a single index.html page at <uri>http://localhost:8080/index.html</uri>.   Ignore docker, ignore the port 8080, ignore nginx, just know that on my local machine I have a service running which works like any website does allowing for an HTTP request to come in and the server to respond with a single html page containing "hello world".
+        Diving right in, I have a TCP packet capture intercepting traffic on port 8080.  I'm running an nginx docker container, which is serving a single index.html static page at <uri>http://localhost:8080/index.html</uri>. Ignore docker, ignore port 8080, ignore nginx, just know that on my local machine I have a service running which works like any website and am capturing the request and response between my browser and the local service.
       </para>
      <sidebar>
-       <title>Commands</title>
+       <title>Demo Execution</title>
        <para>
-         You can create a simple index.html page with any text editor.  Running the packet capture can be performed from a BASH command line (such as WSL or MacOS Terminal)
-       </para>
-       <code language="shell">
-         sudo tcpdump -i eth0 -s0 -w test.pcap port 8080
-       </code>
+         Performing this demo locally isn't required, but if you're curious, you can.  First step is to create a simple index.html page with any text editor that contains "hello world".  You can serve this index.html page up using an nginx container with </para>
+         <para>
+           <code>docker run --name local-nginx -p 8080:80 -v /tmp/static:/usr/share/nginx/html:ro -d nginx</code></para>
+           <para>
+              Which assumes the index.html is on your local machine at <code>/tmp/static/index.html</code>. Finally, the packet capture can be performed from a BASH command line (such as WSL or MacOS Terminal)
+            </para>
+            <para>
+              <code>sudo tcpdump -i eth0 -s0 -w demo.pcap port 8080</code>
+            </para>
+            <para>
+              With these quick steps, we have an HTML page available from an nginx container running on 8080, with packet captures being appended to demo.pcap.
+            </para>
      </sidebar>
+     <para>
+       Opening my FireFox browser to http://localhost:8080/index.html, I receive my "hello world" reply.  Halting the packet capture with <code>CTRL+C</code>, I now have a packet capture I can open with WireShark.
+       <warning>
+         <title>Don't Use WireShark at Work</title>
+         <para>
+           I discovered the hard way that WireShark may get you in trouble from overzealous IT admins in the workplace.  WireShark defaults to running in promiscuous mode, which allows you to capture any traffic your network interface card (NIC) receives, which may include unencrypted traffic intended for other receivers.  Some work environments monitor for services running in promiscuous mode, attempting to identify network adversaries (hackers) and corporate espionage.  Other workplaces monitor for installations of WireShark and other hacker-friendly tools.  I recommend avoiding WireShark installations without explicit written approval.
+         </para>
+       </warning>
+     </para>
+     <para>
+       Examining the packet capture, we can see the following when applying the filter <code>tcp.port == 8080</code>
+       <programlisting>
+         <![CDATA[
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+DNT: 1
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
+HTTP/1.1 200 OK
+Server: nginx/1.19.5
+Date: Mon, 14 Dec 2020 03:31:55 GMT
+Content-Type: text/html
+Content-Length: 12
+Last-Modified: Mon, 14 Dec 2020 00:06:19 GMT
+Connection: keep-alive
+ETag: "5fd6ac7b-c"
+Accept-Ranges: bytes
+
+hello world
+         ]]>
+       </programlisting>
+     </para>
    </section>
 </article>
