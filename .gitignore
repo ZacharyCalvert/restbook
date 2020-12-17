@@ -3,3 +3,7 @@ docbook-5.0CR7.zip
 restful.html
 restful.pdf
 *.fo
+restful.aux
+restful.log
+restful.out
+restful.toc
