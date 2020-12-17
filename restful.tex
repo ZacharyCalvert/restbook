@@ -52,6 +52,25 @@
 \renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
 \renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
 
+%%% Code Stuff
+
+\usepackage[noframe]{showframe}
+\usepackage{framed}
+\usepackage{lipsum}
+\newenvironment{sidebar}{%
+  \def\FrameCommand{\fboxsep=\FrameSep \colorbox{shadecolor}}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore\FrameRestore}}%
+ {\endMakeFramed}
+\definecolor{shadecolor}{gray}{0.75}
+
+\newenvironment{code}
+  {\begin{tabular} {|p{0.9\textwidth}|}
+  \hline\\
+  }
+  {
+  \\\\\hline
+  \end{tabular}
+  }
 
 %%% END Article customizations
 
