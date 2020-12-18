@@ -1,31 +1,49 @@
 \chapter*{Preface}
 \addcontentsline{toc}{chapter}{Preface}
 
-Welcome to Designing, Modeling, and Securing RESTful APIs.  Thank you for your interest and thank you for your support.
+\section*{Welcome}
+
+Welcome to Designing, Modeling, and Securing RESTful APIs.
 
 This book is written for software engineers and architects who have development experience with a modern language or two and hopefully have been responsible for a nontrivial integration.  You might have even encountered an API which "felt off" or was hard to understand, and couldn't quite identify what was wrong with it.  Encountering a poorly designed API can make you question the quality of the offered product, and is analogous to a bad first date.  A good deal of the time, a first impression really can tell you all you need to know.
 
-
-For the sake of brevity, this is not really a book for software developers just getting started in their career.  Pairs programming and proper mentorship are a fundamental starting point for someone responsible for designing public facing services.  At a minimum, you should have a microservice or two under your belt.  I learned more on my job in the first 3 months in a professional setting than I did in my 4.5 years of college.
+For the sake of brevity, this is not really a book for software developers just getting started in their career.  Pairs programming and proper mentorship are a fundamental starting point for someone responsible for designing public facing services.  At a minimum, you should have a microservice or two under your belt.  I learned more in the first 3 months working than I did in my 4.5 years of college.
 
 The structure of the book is to start with an explanation of a simple HTTP over TCP exchange, a brief history, and a case study which we will follow throughout the book.  Security, while a significant portion of our focus, is presented after the foundational concepts of REST.  Architectural concepts are presented with thought given to security, scalability, and maintainability. Debugging and diagnosing integration woes is peppered throughout the texts within.
-
-Throughout this book, we will introduce development utilities, debuggers, proxies, and command line utilities.  You'll want to have access to a BASH or ZSH terminal for access to curl and tcpdump.  As expected, you'll also want access to a modern browser with development tools; in 2020 just about any widely available browser will do.  You'll need access to the internet for reviewing the current Open API specification and online editors such as <uri>https://editor.swagger.io/</uri>.  You'll likely also need desktop applications for packet capture reviewing such as WireShark.  Plan to also install developer applications such as POSTMAN and Charles Proxy.  Finally, I try to use containers for all of my demonstration materials, so you may as well go ahead and install Docker command line utilities as well.
-
-Utilities, examples, and sample code used to prepare reference materials for this book have been executed on a Windows 10 machine, running an Ubuntu Windows Subsystem for Linux (WSL).  Frankly I prefer Mac, but my Lenovo has been tried and true, at about a third of the cost of the equivalent MacBook Pro.
-
-This book's initial outline and first draft has been written using DocBook XSL.  I'm not overly fond of the format, and the community and tooling seems very fragmented, but it has allowed me to work within the confines of an Atom text editor and a terminal.  Oddly enough, for a framework on writing documentation, the documentation for DocBook is nearly impossible to wade through, with broken version patterns, impossible to find reference XML, an old-school affinity for manually customized XSLT files, and ancient references to content hosted on the defunct and virus-ware download button laden SourceForge.net.
-
-A fitting question for a preface is "why another book on REST"?  Ultimately, this book will share a shelf with many others written on the same concept, a 20+ year old topic introduced by Roy Fielding in 2000 <citation>Fielding2000</citation>.  I picked up a few of the higher rated REST books to figure out if it was worth the effort and can say confidently this book will fill a niche. Most REST API books are either do's or don't do's, guidelines, standards, or opinion pieces on which approach is better.  I have not encountered one that transitions from a case study into a how-to.  I have yet to uncover one that goes into depths of debugging, CORS, Basic Auth, Bearer Auth, and TLS under the same cover.  Finally, I have come across none using Open API 3.0 spec as their modeling language.  All of that said, most of my knowledge has come from encountering both good and bad APIs, a lot of Stack Overflow posts, a thorough reading of the Open API 3.0 specification, and paid professional enterprise application development experience.
 
 \begin{sidebar}
 \begin{center}
 \textbf{Disclaimer}
 \end{center}
-This is some command
-These commands are interesting
+In terms of securing your APIs, this book can't make you a security expert, but it can try to assist in building a foundational understanding.  This book intends to explain some pitfalls your are likely to encounter in your journey, the difference between authentication and authorization, issues with cookies, cross domain scripting, and more.  It is worth your time going through and reading documentation at \url{https://owasp.org/}.
 \end{sidebar}
 
-\begin{code}
-This is some code
-\end{code}
+
+\section*{Resources}
+
+Throughout this book, we will introduce development utilities, debuggers, proxies, and command line utilities.  If you want to follow along, you'll want to have access to a BASH or ZSH terminal for access to curl and tcpdump.  As expected, you'll also want access to a modern browser with development tools; in 2020 just about any widely available browser will do.  The theories and architectural concepts presented, as well as REST nuances, will not require access to a computer.
+
+You'll need access to the internet for reviewing the current Open API specification and online editors such as \url{https://editor.swagger.io/}.  You'll likely also need desktop applications for packet capture reviewing such as WireShark.  Plan to also install developer applications such as POSTMAN and Charles Proxy.  Finally, I try to use containers for all of my demonstration materials, so you may as well go ahead and install Docker command line utilities.
+
+Utilities, examples, and sample code used to prepare reference materials for this book have been executed on a Windows 10 machine, running an Ubuntu Windows Subsystem for Linux (WSL).  Frankly I prefer Mac, but my Lenovo has been tried and true, at about a third of the cost of the equivalent MacBook Pro.
+
+\section*{About this Book}
+This book's initial outline and first draft was written using DocBook XSL.  This is my first attempt at a book, and the learning curve was steep.  After running into fragmentation in the DocBook documentation and utilities, I chose to transition to LaTeX for typesetting with a MiKTeX install rather than fighting WSL compatibility issues.  The majority of the content was written using Atom, which is an editor I highly recommend.
+
+You may ask, "why another book on REST"?  Ultimately, this book will share a shelf with many others written on the same concept, a 20+ year old topic introduced by Roy Fielding in 2000 \cite{fielding}.  I picked up a few of the higher rated REST books to figure out if it was worth the effort and can say confidently this book will fill a niche. Most REST API books are either do's or don't do's, guidelines, standards, or opinion pieces on which approach is better.  I have not encountered one that transitions from a case study into a how-to.  I have yet to uncover one that goes into depths of debugging, CORS, Basic Auth, Bearer Auth, and TLS under the same cover.  Finally, I have come across none using Open API 3.0 spec as their modeling language.  All of that said, most of my knowledge has come from encountering both good and bad APIs, a lot of Stack Overflow posts, a thorough reading of the Open API 3.0 specification, and paid professional enterprise application development experience.
+
+Most of the content from this book comes from encountering the same problems and the same conversations over and over again.  Whether it be trying to explain how to plan out an API to a seasoned engineer that "knows microservices", or uncovering yet another enterprise solution that has no proper documentation for developer adoption, it always came down to "what's your contract?"  It is amazing how much information regarding use cases, user stories, system actors, and business needs can be conveyed to an engineer in a single contract markdown YML file.
+
+Stepping down from my soap box, having your contract planned ahead of time can uncover a substantial amount of design problems and drive forethought into your overall architecture.  When leading a team, it also grants you an amount of flexibility in assigning concurrent tasks.  "You build this part of the API, you build that, and you can start on the client work against a mocked implementation."  Agile teams in enterprise settings can run amiss of scrambling to finish feature stories without knowing what the final contract will look like.  The end result can and likely will feel fragmented at best, and unusable at worst.
+
+\section*{About the Author}
+
+I, Zachary Calvert, am a 2004 graduate of the University of Texas at Arlington, with a Bachelor of Science in Software Engineering, summa cum laude.  I am a former member of American Mensa, no longer a paying member, and an engineer with 17 years of professional experience.  I have worked for the aviation industry at Southwest Airlines contracted through TEKsystems, intermodal transportation for BNSF contracted through HCL America, the automotive industry for Toyota contracted through Workforce Logiq, financial services for TransUnion, humbly paid for two failed S-Corps, and worked for a smattering of other small, medium, and large sized companies.  Said in the words of my wife, I've worked on planes, trains, and automobiles.
+
+What I hope grants me some credibility with the approach presented throughout this book is the fact that I've served roles in API development, DevOps, database design, application security, and client application engineering.  For API development, I've leveraged Spring Boot, NPM, and golang.  For DevOps, I'm handy with BASH, Python, Terraform, Kubernetes, Heroku, Cloud Foundry, and trying to keep up with the ever growing technology footprint of AWS.
+
+For client applications I've developed single-page applications with ReactJS and iPad applications using Swift 5.  I even have history developing old-school WAR and EAR artifacts using Java, JSPs, and Struts on Tomcat and Oracle WebLogic.  I've designed RDBMS on Oracle, MySQL, and Postgres as well as NoSQL schemas on Cassandra and MongoDB.
+
+If you've seen my resume, it is rather ridiculous.  I'm always trying to find the right balance of work/life, pay, career growth, and challenges which will keep my career technology centric and relevant.  If my father taught me one thing, it was to know your worth and to not grow attached to a company, as a company will never grow attached to you.  "It's just business" goes both ways.
+
+I am married to a hard-working equal, a loving and multi-talented paralegal, an anthropology graduate of the University of Texas (UT), quilter, baker, interior decorator, and mother.  We are overwhelmed parents to one overly energetic, talkative, sleepless, and busy young man who constantly challenges our sanity and patience.  We live in Texas where we enjoy summer, semi-summer, almost-not-summer, and icy-road accident gridlock fall.

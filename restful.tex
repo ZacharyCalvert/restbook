@@ -15,6 +15,24 @@
 % These packages are optional, depending whether you want the features they provide.
 % See the LaTeX Companion or other references for full information.
 
+%%% Copyright SECTION
+\usepackage{fancyhdr}
+\def\secondpage{\clearpage\null\vfill
+\pagestyle{empty}
+\begin{minipage}[b]{0.9\textwidth}
+\footnotesize\raggedright
+\setlength{\parskip}{0.5\baselineskip}
+Copyright \copyright 2020--\the\year\ by Zachary Calvert\par
+All rights reserved.
+\end{minipage}
+\vspace*{2\baselineskip}
+\cleardoublepage
+\rfoot{\thepage}}
+
+\makeatletter
+\g@addto@macro{\maketitle}{\secondpage}
+\makeatother
+
 %%% PAGE DIMENSIONS
 \usepackage[papersize={8.5in,11in}]{geometry}
 % \usepackage{geometry} % to change the page dimensions
@@ -63,14 +81,21 @@
  {\endMakeFramed}
 \definecolor{shadecolor}{gray}{0.75}
 
-\newenvironment{code}
-  {\begin{tabular} {|p{0.9\textwidth}|}
-  \hline\\
+\newenvironment{code}{%
+  \raggedright\begin{tabular} {|p{0.9\textwidth}|}
+  \hline
   }
   {
   \\\\\hline
   \end{tabular}
   }
+
+\usepackage{listings}
+\lstset{
+  basicstyle=\small\ttfamily,
+  columns=flexible,
+  breaklines=true
+}
 
 %%% END Article customizations
 
@@ -97,6 +122,21 @@
 \mainmatter
 \pagenumbering{arabic}
 \input{chapters/introduction}
+\input{bib}
 
 
 \end{document}
+
+
+%%%% NOTES
+%\begin{sidebar}
+%\begin{center}
+%\textbf{Disclaimer}
+%\end{center}
+%This is some command
+%These commands are interesting
+%\end{sidebar}
+
+%\begin{code}
+%This is some code
+%\end{code}

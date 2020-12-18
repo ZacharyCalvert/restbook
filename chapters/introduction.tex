@@ -1,3 +1,66 @@
 \chapter{Brief Introduction}
+\section{Browser Fetch}
 
-This is a very brief introduction
+Bare with the start as we go run through a bit of history with browser requests and page loads, and know we will quickly move into REST examples and get into our case study.
+
+Diving right in, I have a TCP packet capture intercepting traffic on port 8080.  I'm running an nginx docker container, which is serving a single index.html static page at \textit{http://localhost:8080/index.html}. Ignore docker, ignore port 8080, ignore nginx, just know that on my local machine I have a service running which works like any website and am capturing the request and response between my browser and the local service.
+
+\begin{sidebar}
+\begin{minipage}{\linewidth}
+\begin{center}
+\textbf{Demo Execution}
+\end{center}
+Performing this demo locally isn't required, but if you're curious, you can.  First step is to create a simple index.html page with any text editor that contains "hello world".  You can serve this index.html page up using an nginx container with
+\begin{code}
+\begin{lstlisting}[belowskip=-\baselineskip]
+docker run --name local-nginx -p 8080:80 \
+-v /tmp/static:/usr/share/nginx/html:ro -d nginx
+\end{lstlisting}
+\end{code}
+Which assumes the index.html is on your local machine at /textit{/tmp/static/index.html}. Finally, the packet capture can be performed from a BASH command line such as WSL or MacOS Terminal.
+\begin{code}
+\begin{lstlisting}[belowskip=-\baselineskip]
+sudo tcpdump -i eth0 -s0 -w demo.pcap port 8080
+\end{lstlisting}
+\end{code}
+With these quick steps, we have an HTML page available from an nginx container running on 8080, with packet captures being appended to demo.pcap.
+\end{minipage}
+\end{sidebar}
+
+Opening my FireFox browser to http://localhost:8080/index.html, I receive my "hello world" reply.  Halting the packet capture with \textit{CTRL+C}, I now have a packet capture I can open with WireShark.
+
+\begin{sidebar}
+\begin{center}
+\textbf{Don't Use WireShark at Work}
+\end{center}
+I discovered the hard way that WireShark may get you in trouble from overzealous IT admins in the workplace.  WireShark defaults to running in promiscuous mode, which allows you to capture any traffic your network interface card (NIC) receives, which may include unencrypted traffic intended for other receivers.  Some work environments monitor for services running in promiscuous mode, attempting to identify network adversaries (hackers) and corporate espionage.  Other workplaces monitor for installations of WireShark and other hacker-friendly tools.  I recommend avoiding WireShark installations without explicit written approval.
+\end{sidebar}
+
+Examining the packet capture, we can see the following when applying the filter\textit{tcp.port == 8080}
+
+\begin{code}
+\vspace{-\baselineskip}
+\begin{lstlisting}[belowskip=-\baselineskip]
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+DNT: 1
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
+HTTP/1.1 200 OK
+Server: nginx/1.19.5
+Date: Mon, 14 Dec 2020 03:31:55 GMT
+Content-Type: text/html
+Content-Length: 12
+Last-Modified: Mon, 14 Dec 2020 00:06:19 GMT
+Connection: keep-alive
+ETag: "5fd6ac7b-c"
+Accept-Ranges: bytes
+
+hello world
+\end{lstlisting}
+\end{code}
