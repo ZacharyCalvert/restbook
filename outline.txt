@@ -1,0 +1,68 @@
+Introduction
+	- What is REST
+	- History, JSP, to SOAP, to browser-client SOAP, to JSON, to REST
+	- XML, then JSON, now YML
+	- Multi-client support
+	- Future, where might we go
+Setting our Foundation
+	- Introduce our Library case study
+	- CRUD
+	- Nouns vs HTTP Verbs
+	- Context vs Payload
+	- Approaching with the Consumer in mind
+		○ Consumer Driven Contracts
+	- Specification Language Used (Open API 3.0)
+	- Finish with an example
+Noun Design - the HTTP URL
+	- Plural vs single
+	- Versioning
+	- Noun is a noun is a noun
+Verb Design - the HTTP Method
+	- Part of an HTTP payload for HTTP Method
+	- GET
+	- POST
+		○ understanding idempotent
+	- PUT
+	- POST vs PUT, the debate
+	- DELETE
+	- PATCH
+HTTP Status Codes
+	- Interview Questions 101
+		○ Footnote of 1xx, 3xx codes
+	- Success Codes 2xx
+	- Client Error 4xx
+	- Server Error 5xx
+HTTP Headers
+	- Authorization
+	- Correlation
+		○ X-Request-ID, X-Correlation-ID
+Security
+	- Authentication vs Authorization
+	- CORS
+	- JWT Bearer tokens
+	- Cookies vs Headers vs
+Specification Languages
+	- YML vs JSON vs XML
+	- Open API 3.0
+	- RAML
+	- Swagger 2.0
+	- WRML
+System Architecture
+	- Monoliths, Microservices, FaaS
+	- System debugging, correlation, maintainability
+	- Containers
+	- API Gateways
+		○ Cloud provider
+		○ Apigee
+		○ Tyk.io
+Websockets
+	- Combining them with REST
+	- HTTP Upgrade vs TCP
+Appendix
+	- Client examples
+		○ editor.swagger.io
+		○ curl
+		○ RAML ??
+	- HATEOS
+	- SOAP and WSDL
+	- OIDC, Oauth 2.0
