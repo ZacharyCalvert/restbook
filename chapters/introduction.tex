@@ -1,9 +1,9 @@
 \chapter{Brief Introduction}
-\section{Browser Fetch}
+\section{HTML Fetch}
 
-Bare with the start as we go run through a bit of history with browser requests and page loads, and know we will quickly move into REST examples and get into our case study.
+Bear with the start as we go run through a bit of history with browser requests and page loads, and know we will quickly move into REST examples and get into our case study.
 
-Diving right in, I have a TCP packet capture intercepting traffic on port 8080.  I'm running an nginx docker container, which is serving a single index.html static page at \textit{http://localhost:8080/index.html}. Ignore docker, ignore port 8080, ignore nginx, just know that on my local machine I have a service running which works like any website and am capturing the request and response between my browser and the local service.
+Diving right in, I have a TCP packet capture intercepting traffic on port 8080.  I'm running an nginx docker container, which is serving a single index.html static page at \url{http://localhost:8080/index.html}. Ignore docker, ignore port 8080, ignore nginx, just know that on my local machine I have a service running which works like any website and am capturing the request and response between my browser and the local service.
 
 \begin{sidebar}
 \begin{minipage}{\linewidth}
@@ -17,7 +17,7 @@ docker run --name local-nginx -p 8080:80 \
 -v /tmp/static:/usr/share/nginx/html:ro -d nginx
 \end{lstlisting}
 \end{code}
-Which assumes the index.html is on your local machine at /textit{/tmp/static/index.html}. Finally, the packet capture can be performed from a BASH command line such as WSL or MacOS Terminal.
+Which assumes the index.html is on your local machine at \textit{/tmp/static/index.html}. Finally, the packet capture can be performed from a BASH command line such as WSL or MacOS Terminal.
 \begin{code}
 \begin{lstlisting}[belowskip=-\baselineskip]
 sudo tcpdump -i eth0 -s0 -w demo.pcap port 8080
@@ -27,7 +27,7 @@ With these quick steps, we have an HTML page available from an nginx container r
 \end{minipage}
 \end{sidebar}
 
-Opening my FireFox browser to http://localhost:8080/index.html, I receive my "hello world" reply.  Halting the packet capture with \textit{CTRL+C}, I now have a packet capture I can open with WireShark.
+Opening my FireFox browser to \url{http://localhost:8080/index.html}, I receive my "hello world" reply.  Halting the packet capture with \textit{CTRL+C}, I now have a packet capture I can open with WireShark.
 
 \begin{sidebar}
 \begin{center}
@@ -36,7 +36,9 @@ Opening my FireFox browser to http://localhost:8080/index.html, I receive my "he
 I discovered the hard way that WireShark may get you in trouble from overzealous IT admins in the workplace.  WireShark defaults to running in promiscuous mode, which allows you to capture any traffic your network interface card (NIC) receives, which may include unencrypted traffic intended for other receivers.  Some work environments monitor for services running in promiscuous mode, attempting to identify network adversaries (hackers) and corporate espionage.  Other workplaces monitor for installations of WireShark and other hacker-friendly tools.  I recommend avoiding WireShark installations without explicit written approval.
 \end{sidebar}
 
-Examining the packet capture, we can see the following when applying the filter\textit{tcp.port == 8080}
+Examining the packet capture, we can see the following traffic:
+
+\textit{Browser client to server:}
 
 \begin{code}
 \vspace{-\baselineskip}
@@ -50,7 +52,14 @@ Accept-Encoding: gzip, deflate
 DNT: 1
 Connection: keep-alive
 Upgrade-Insecure-Requests: 1
+\end{lstlisting}
+\end{code}
 
+\textit{Server response:}
+
+\begin{code}
+\vspace{-\baselineskip}
+\begin{lstlisting}[belowskip=-\baselineskip]
 HTTP/1.1 200 OK
 Server: nginx/1.19.5
 Date: Mon, 14 Dec 2020 03:31:55 GMT
@@ -64,3 +73,36 @@ Accept-Ranges: bytes
 hello world
 \end{lstlisting}
 \end{code}
+
+From the client initial request, we have \textit{GET / HTTP/1.1} which indicates the HTTP Method of \textit{GET}, the resource requested \textit{/}, and the protocol and protocol version \textit{HTTP 1.1}.  Following the method, resource, and protocol, we have a list of key value pairs known as HTTP headers indicating our language, our client, what the target host is, and more.
+
+From the server reply, we have a similar \textit{HTTP/1.1 200 OK} which tells us the protocol version we're replying with, a status code of \textit{200 OK}, followed by similar key value pairs of headers which tells us information about the server, how big the server reply is, when it was last modified, and the type of content being returned.  Finally, we have the body of the request which includes the text placed into index.html of \textit{hello world}.
+
+To understand REST and how it works, it is important to grasp that we are moving towards conventions of these resources, status codes, bodies, methods, and headers to map out a plan for transferring state of resources.  In the crash course introduction for REST:
+\begin{itemize}
+  \item The resource is a noun.  For example a URL of \textit{/v1/books/123-567} may be a fetch of a book with ISBN 123-567.
+  \item The code tells you if the operation succeeded or failed.  For example, \textit{201 Created} tells you a resource was Created.
+  \item The headers convey context.  Context is anything outside of the resource being retrieved or modified, such as user or browser.
+  \item The body conveys the state.  It is a state transfer.
+\end{itemize}
+
+\section{What is REST?}
+
+For the textbook answer, REST is short for Representational State Transfer, an architectural pattern for HTTP web services that was originally presented by Roy Fielding in 2000 \cite{fielding}.  Over time it has transitioned into transactional-like definition of services, playing to the dynamic needs of web content and native clients.  For those who grimace at the "transactional-like", your status codes are your error code / success code equivalent, and still I'm sure some readers will gag at the notion.
+
+At its heart, REST drives home web-service CRUD (create, read, update, delete) operations into standardized methods.  REST is another step forward in the convention-over-configuration direction that developers started when moving from build scripts written in ANT.xml to Maven and Gradle.  Status codes dictated by w3c committees are used to quickly convey success/failure.  Headers are used to carry context instead of state, including identity and authorization.  Target state is transferred to the server via the request body, and the result state is transferred to the client in the result body.
+
+If you've ever tried to use native protocols, or someone's home-grown socket solution, you'll appreciate the semi-consistent feel of a good REST API.
+
+\section{We tried this before...}
+
+A bit of history to understand some of the legacy any engineer facing enterprise problems will likely encounter.  For those thinking everyone has moved to microservices, your banks still manage your money in mainframes, and most of your flights are managed through SOAP.  COBOL is still in use today, and don't be fooled thinking history won't find a way to make your life miserable at some point in your career.  Legacy code manages to employ a lot of our peers.
+
+WEB 1990s and early 2000s architecture was structured with this:
+
+\section{Web, to XML, to SOAP, to REST}
+
+\section{Old Architecture vs New Architecture}
+
+
+\section{Case Study: Library}

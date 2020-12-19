@@ -10,4 +10,4 @@ rm restful.pdf 2>/dev/null
 # fop -pdf restful.pdf -fo intermediate-fo-file.fo && \
 #	/mnt/c/Program\ Files/Mozilla\ Firefox/firefox.exe restful.pdf
 
-pdflatex restful.tex && /mnt/c/Program\ Files/Mozilla\ Firefox/firefox.exe restful.pdf
+pdflatex restful.tex && pdflatex restful.tex && /mnt/c/Program\ Files/Mozilla\ Firefox/firefox.exe restful.pdf
