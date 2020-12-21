@@ -1,0 +1,11 @@
+@startuml
+Browser -> Server: Request
+Server -> Engine: Build request data
+Engine -> Engine: Do work
+Engine -> Engine: Build reply parameters
+Engine -> Server: Parameters
+Server -> Render: Calculated parameters
+Render -> Render: Parameters + JSP/ASP = HTML
+Render -> Server: Built HTML
+Server -> Browser: return HTML
+@enduml

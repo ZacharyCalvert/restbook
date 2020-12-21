@@ -1,0 +1,20 @@
+@startuml
+actor User
+agent Browser
+
+cloud "Webservices" {
+  agent "HTML + JS Server" as media
+  agent "JSON API 1" as a1
+  agent "JSON API 2" as a2
+  agent "SOAP Service 1" as s1
+  agent "SOAP Service 2" as s2
+  agent "SOAP Service 3" as s3
+}
+User --> Browser
+Browser --> media
+Browser --> a1
+Browser --> a2
+a1 --> s1
+a2 --> s2
+a2 --> s3
+@enduml

@@ -1,15 +1,1 @@
-\chapter{Designing APIs}
-
-\section{Consumer Driven Contracts}
-
-Presenting theory for the pattern for Consumer Driven Contract is quite simple.  The consumer's needs drive the contract of the resulting API.
-
-The concept of Consumer Driven Contracts is not new to REST API engineers.  Many SOAP and other TCP services are built with the consumer in mind, but it is worth revisiting for architects planning out RESTful APIs.  At its core, the concept of Consumer Driven Contracts places the burden on the back-end engineers to write the service once, so that the N number of client integrators don't have to rewrite the business logic to accomplish the same task.
-
-While the architect for APIs tends to be experienced back-end systems engineers, there is quite a bit of merit to assigning the front-end engineers as the designers. Consumer-Driven Contracts places the burden on the back-end teams to develop systems which hide the complexity through a consumer friendly API. We will hide all of the legacy, all of the technical debt, and all of the poor technology choices behind a clean API meant to enable clients to quickly integrate to.
-
-Our goal for clients is fast adoption so that we can build native and browser apps for Android, iOS, desktop, and command-line consumers.  In addition, thought is given to scenarios where your consumers may also be other microservice apps.
-
-When designing an API, it is imperative you have a notion of your consumers, be them microservices, native clients, or terminal system admins.  More importantly, even if you're the developer working on the back-end providing the API offering, you must know the user stories and use cases driving the need for your implementation.  \\\textit{ I as a library administrator need to determine the availability of a book by ISBN so that I may answer availability questions regarding a title.}  This user story could lead to a very different API offering than \textit{I as a system need to obtain the list of books by ISBN so that I may determine if too many books have been purchased and should be offered for sale.}  The librarian needs to know what's available right now, but the system may need how many are checked out and how many are owned by the library in total.  You can answer both needs with the same REST endpoint, but notice how the system story expands the scope of the resulting API.  Proper planning and forethought given into the final API may result in reduced work performed by the system teams to cover the breadth of the user stories.
-
-The argument can be made that this approach smells like a waterfall planning model verses feature planning for an agile sprint, and you'd be correct.  That said, an architect with a few discussions with a product owner can plan out a strong API in a single sprint, without having to scope the entire project out in a waterfall model.  That doesn't mean the API won't change, and that doesn't mean the API will be perfect, but the planning can pay off in big ways.
+\chapter{REST Verbs}

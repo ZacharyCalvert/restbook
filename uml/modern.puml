@@ -1,0 +1,20 @@
+@startuml
+agent Browser
+agent iOS
+agent Android
+agent Server
+collections "API Gateway" as gateway
+collections  "REST API 1" as r1
+collections  "REST API 2" as r2
+collections  "REST API 3" as r3
+Browser --> gateway
+iOS --> gateway
+Android --> gateway
+Server --> gateway
+gateway --> r1
+gateway --> r2
+gateway --> r3
+r1 --> gateway
+r2 --> gateway
+r3 --> gateway
+@enduml

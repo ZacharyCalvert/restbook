@@ -1,0 +1,16 @@
+@startuml
+actor User
+agent Browser
+
+cloud "Webservices" {
+  agent Webserver
+  agent "SOAP Service 1" as s1
+  agent "SOAP Service 2" as s2
+  agent "SOAP Service 3" as s3
+}
+User --> Browser
+Browser --> Webserver
+Webserver --> s1
+Webserver --> s2
+Webserver --> s3
+@enduml

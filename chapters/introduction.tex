@@ -96,13 +96,158 @@ If you've ever tried to use native protocols, or someone's home-grown socket sol
 
 \section{We tried this before...}
 
-A bit of history to understand some of the legacy any engineer facing enterprise problems will likely encounter.  For those thinking everyone has moved to microservices, your banks still manage your money in mainframes, and most of your flights are managed through SOAP.  COBOL is still in use today, and don't be fooled thinking history won't find a way to make your life miserable at some point in your career.  Legacy code manages to employ a lot of our peers.
+A bit of history to understand some of the legacy any engineer facing enterprise problems will likely encounter.  For those thinking everyone has moved to microservices, your banks still manage your money in mainframes, and most of your flights are managed through SOAP.  COBOL is still in use today, and don't be fooled thinking history won't find a way to make your life miserable at some point in your career.  Legacy code manages to employ a lot of our peers.  If you're a Java developer, you're going to encounter old-school Java Servlet Pages (JSPs), Web-ARchives (WARs), and Enterprise Application aRchives (EARs).  You're welcome.
 
-WEB 1990s and early 2000s architecture was structured with this:
+WEB 1990s and early 2000s architecture was structured like this:
 
-\section{Web, to XML, to SOAP, to REST}
+\includegraphics{browserToServer}
 
-\section{Old Architecture vs New Architecture}
+The browser would request a web page and the server would do some work to hand build it.  Inevitably as more browsers came online, and more browser versions came online, more and more work had to be performed by the server developers to tailor to issues with content rendering in various browsers. Mostly fighting Internet Explorer.  Additionally, as web content became more and more complex, so did the code to build the customized reply for shopping carts, bank statements, flight status, etc.
 
+Eventually, server developers started adopting frameworks such as ASP.NET (C++) or JSPs (Java) which isolated built parameters with HTML response content:
+
+\includegraphics{jsps}
+
+Anyone with experience building JSPs and ASPs knows it actually works a little different, such as JSP and Java getting compiled into a single .class file which is treated as both the renderer and the engine, but for the history lesson, the process is more important than the actual artifact.
+
+With this update, we began the process of isolating calculated output from the rendered view.  It was our first step into MVC (Model-View-Controller), but we still faced issues of page content becoming more and more complex being tailored to more and more browsers.  More than that, we had a nasty problem of scale.  In this situation, the server receiving the request would have to do the work, build the page, and fire the reply in a timely manner.  To scale, we needed to enable server-to-server communication.
+
+Our first dive into server-to-server involved custom socket buffer definitions, which then migrated into Simple Object Access Protocol, aka SOAP.
+
+\begin{sidebar}
+\begin{center}
+\textbf{XML, SOAP, and JSON}
+\end{center}
+We're going to hit on a bit of history with XML, SOAP, and JSON so it is worth having a short example of each as a TODO list.
+
+Sample XML reply that could be considered "browser friendly":
+
+\begin{code}
+\vspace{-\baselineskip}
+\begin{lstlisting}[belowskip=-\baselineskip]
+<?xml version="1.0" encoding="UTF-8"?>
+<todo>
+  <item>Laundry</item>
+  <item>Trash</item>
+  <item>Dishes</item>
+</todo>
+
+\end{lstlisting}
+\end{code}
+
+With a potential SOAP equivalent:
+
+\begin{code}
+\vspace{-\baselineskip}
+\begin{lstlisting}[belowskip=-\baselineskip]
+<?xml version = "1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope
+   xmlns:SOAP-ENV = "http://www.w3.org/2001/12/soap-envelope"
+   SOAP-ENV:encodingStyle = "http://www.w3.org/2001/12/soap-encoding">
+
+   <SOAP-ENV:Body xmlns:m = "https://www.example.com/todos">
+      <m:Todo>
+         <m:Item>Laundry</m:Item>
+         <m:Item>Trash</m:Item>
+         <m:Item>Dishes</m:Item>
+      </m:Todo>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+\end{lstlisting}
+\end{code}
+
+Finally, our less-verbose, browser and user-friendly JSON equivalent:
+
+\begin{code}
+\vspace{-\baselineskip}
+\begin{lstlisting}[belowskip=-\baselineskip]
+{"todo": ["Laundry", "Trash", "Dishes"]}
+\end{lstlisting}
+\end{code}
+
+\end{sidebar}
+
+SOAP has a rather lengthy and sordid history, which is not the focus of this book, but it is worth touching upon.  SOAP was a rather loose concept of standardizing XML, conveying context such as username and passwords, the request, and the action being performed.  All of it was XML and different architects would inevitably have very different approaches.  Context information such as session, user, password, and more could be found as HTTP Headers, within the SOAP Envelope, or even within the SOAP Body.  SOAP was verbose, machine-friendly very browser unfriendly, not very developer-friendly, and very fragmented.  There are certainly more issues with SOAP, but you get the point.
+
+\begin{minipage}{\linewidth}
+So, with SOAP, we migrated an XML API architecture approaching something along the lines of
+
+\includegraphics{soap1}
+
+\end{minipage}
+
+This is still before mobile phones are a thing.  The web continues to grow and users are loading up Netscape, Internet Explorer, Opera, FireFox, and others.  Content started to not only require different HTML responses but different release cycles outside of the SOAP service development cycle.  Offering up media such as CSS and image changes took an isolated release process from many of the SOAP services.  Enter Asynchronous JavaScript and XML, better known as AJAX.  AJAX + SOAP really was too much to handle, as you started to see ugly JavaScript needing to be written to handle the SOAP payloads.  More often, you'd have custom XML services talking to custom SOAP and databases.
+
+\includegraphics{soap2}
+
+The problem compounds as the page complexity grows and now you have browser-friendly XML APIs and server SOAP APIs.  Inevitably the clients on both browsers and servers, for browser-to server and server-to-server communication needs to become more consistent and more consumer friendly.  Concurrently to all of this nasty fragmentation, browser engineers start forcing the issue with JavaScript Object Notation (JSON).
+
+In quick succession, smart (and staffed) companies pull this stunt:
+
+\includegraphics{js1}
+
+followed by
+
+\includegraphics{js2}
+
+Next step was just to standardize the JSON APIs, getting to that convention-over-configuration that offers enough consistency to feel common but malleable enough to answer business requirements without feeling like hammering a square peg into a round hole.  REST is the chosen victor in our arena.
+
+Ultimately, it rapidly progresses into something luxurious that supports mobile clients, browser clients, internal server-clients, customer servers, API gateway proxies, geo-distributed content delivery networks (CDNs), with RESTful APIs providing the majority of server-state to all interested consumers.
+
+\includegraphics{modern}
+
+\begin{sidebar}
+\begin{center}
+\textbf{Hidden Pieces}
+\end{center}
+
+Do note, this diagram is completely missing big ticket items like scalable block storage, databases, eventing systems, messaging systems, and more.  The focus is in the most commonly found mechanism exposed to our clients and even intra-server communication.
+
+\end{sidebar}
+
+\section{Consumer Driven Contracts}
+
+A noteworthy design concept to touch upon before we start designing our API is Consumer Driven Contracts, which we will use throughout our design process.  Presenting theory for the pattern for Consumer Driven Contract is quite simple.  The consumer's needs drive the contract of the resulting API.
+
+The idea of Consumer Driven Contracts is not new to REST API engineers.  Many SOAP and other TCP services are built with the consumer in mind, but it is worth revisiting for architects planning out RESTful APIs.  At its core, the concept of Consumer Driven Contracts places the burden on the back-end engineers to write the service once, so that the N number of client integrators don't have to rewrite the business logic to accomplish the same task.  The ideal thin client is facilitated by a clean API answering its requirements sufficiently and cleanly.
+
+While the architect for APIs tends to be experienced back-end systems engineers, there is quite a bit of merit to assigning the front-end engineers as the designers. Consumer-Driven Contracts places the burden on the back-end teams to develop systems which hide the complexity through a consumer friendly API. We will hide all of the legacy, all of the technical debt, and all of the poor technology choices behind a clean API meant to enable clients to quickly integrate to.
+
+Our goal for clients is fast adoption so that we can build native and browser apps for Android, iOS, desktop, and command-line consumers.  In addition, thought is given to scenarios where your consumers may be other microservice apps.
+
+When designing an API, it is imperative you have a notion of your consumers, be them microservices, native clients, or terminal system admins.  More importantly, even if you're the developer working on the back-end providing the API offering, you must know the user stories and use cases driving the need for your implementation. Take for example the following user story for a library:
+
+\textit{I as a library administrator need to determine the availability of a book by ISBN so that I may answer availability questions regarding a title.}
+
+This user story could lead to a very different API offering than:
+
+\textit{I as a system need to obtain the list of book copies by ISBN so that I may determine if too many books have been purchased and should be offered for sale.}
+
+The librarian needs to know what's available right now, but the system may need how many are checked out and how many are owned by the library in total.  You can answer both needs with the same REST endpoint, but notice how the system story expands the scope of the resulting API to include copy counts.  Proper planning given into the final API may result in reduced work performed by the system teams to cover the breadth of the user stories.
+
+The argument can be made that this approach smells like a waterfall planning model verses feature planning for an Agile sprint, and you'd be correct.  That said, an architect with a few discussions with a product owner can plan out a strong API in a single sprint, without having to scope the entire project out in a waterfall model.  That doesn't mean the API won't change, and that doesn't mean the API will be perfect, but the planning can pay off in big ways.
 
 \section{Case Study: Library}
+
+Throughout the remainder of this text, we will leverage a case study to design an API with the Open API 3.0 specification.  Our project is to design an API for administrators and consumers of a library.  User stories will include book check-in, book check-out, lost books, sold books, and book availability.  The list of user stories is offered here to allow you to have foresight into where we will take this project, but it is not required you go through them now.  Certainly, don't get ahead of yourself and begin planning out the API just yet.
+
+\begin{itemize}
+  \item I as a Borrower need check on a book's availability so that I may know if the book I wish to checkout is available.
+  \item I as a Borrower need to search for a book by title so that I may know if the book I wish to checkout is available.
+  \item I as an Admin need to reserve a copy of a book for a patron so that they may know it is available when they arrive.
+  \item I as an Admin need to create a book so that I may prepare incoming purchased books for borrowing.
+  \item I as an Admin need to mark a book as sold so that I may remove sold book copies.
+  \item I as an Admin need to create a borrower account so that I may enable new borrowers.
+  \item I as an Automated System need to find past-due books so that I may notify borrowers of fines and fees.
+\end{itemize}
+
+Obviously, this list is entirely incomplete of what services would be required for a full library service offering.  You'd need user search features, account administration features, administrator administration features, payment services, and more.
+
+Our identified actors include:
+
+\begin{itemize}
+  \item Admin: Your friendly librarian.
+  \item Borrower: Anyone interested in checking out books.
+  \item Automated System: A running application or batch process; just code that does regular work be it scheduled or on-demand.
+\end{itemize}

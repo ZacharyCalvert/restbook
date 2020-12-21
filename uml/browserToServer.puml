@@ -1,0 +1,6 @@
+@startuml
+Browser-> Server: Request
+Server -> Server: do work
+Server -> Server: build HTML
+Server -> Browser: return HTML
+@enduml
