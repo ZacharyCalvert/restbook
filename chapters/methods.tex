@@ -1,0 +1,16 @@
+\section{HTTP Methods and REST}
+
+The most common RESTful verbs for mapping out create-read-update-delete (CRUD) operations are GET, PUT, POST, and DELETE.  There is a lesser known PATCH operation used as well, which serves as a sparse data update.  Finally, you will encounter OPTIONS when using REST services from a browser, particularly when going across domains, say from www.example.com hitting an API offered using a subdomain such as rest-api.example.com.
+
+Commonly, HTTP Methods are known as REST Verbs.  It is the action you are taking against the resource.  You're posting it, getting it, putting it, or deleting it, so the terminology is appropriate.
+
+For a brief breakdown, HTTP GET is retrieval or search with filter, and shouldn't incur any side effects.  It is imperative, from a security perspective even, that HTTP GET methods inflict no change.  HTTP POST is meant for resource creation.  HTTP PUT is for resource update \textit{or resource creation}. HTTP DELETE is for deletions or cancellation.  Finally, HTTP PATCH should be used for a sparsely filled update against large resources, or content that is easier for the client to update portions of the resource instead of the whole resource.  Expect a much more thorough explanation in each of the following sections.
+
+\begin{sidebar}
+\begin{center}
+\textbf{Security First}
+\end{center}
+
+The security aspects of designing a RESTful API are presented within this book after presenting the foundational concepts.  This is not the correct approach to take when designing an API.  Security must be a first class citizen when preparing RESTful services.  Whether secured via an API gateway enforcing access controls or building a zero-trust network of microservices, know your security approach before you start implementing.  Retrofitting security into insecure APIs is a mistake and one that could cost your company dearly.  Your clients will need to know your identity provider, you will need to know how to validate the principal, you will need to know how to determine level of authorization, and you will need to have a plan for non-prod test accounts and test credential automation for integration testing.
+
+\end{sidebar}
