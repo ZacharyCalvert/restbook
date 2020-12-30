@@ -59,3 +59,102 @@ paths:
 \end{lstlisting}
 \end{code}
 \end{minipage}
+
+Now we've modeled our object state as well as URL for checking on availability.  Let's move on to our search story.
+
+\textit{I as a Borrower need to search for a book by title so that I may know if the book I wish to checkout is available.}
+
+Given we've already defined an enpoint of \textit{/v1/books/\{isbn\}/copies}, we can see we're not looking to search for copies, we're looking to search on books.  Our endpoint for REST modeling here would be attached to \textit{/v1/books}.  We're looking to model a search capability for our Borrower actor, and we know they don't know the ISBN off of the top of their head.  When you can't uniquely identify the resource by ID and your case requires filtering or searching, use query parameters.   In this case, we will model the endpoint with a title query parameter.
+
+\begin{minipage}{\linewidth}
+
+\begin{code}
+\begin{lstlisting}[belowskip=-\baselineskip]
+/v1/books:
+  get:
+    summary: Search for books
+    operationId: retrieveBooks
+    parameters:
+    - name: title
+      in: query
+      description: Title match for book search
+      required: true
+      schema:
+        type: string
+    responses:
+      200:
+        description: Matching titles found
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Book'
+\end{lstlisting}
+\end{code}
+\end{minipage}
+
+Reviewing our resource, we can question how many matches could we afford before it becomes a problem.  What happens if our user searches for "The"?  Coordinating with product owner, our library search feature is problematic because we can't answer with the entire library full of books, and the UI direction is to allow for drop-down matching when additional letters are typed.  Again, leaning on a fake conversation, let's generate a paged result for the search result.
+
+\begin{minipage}{\linewidth}
+
+\begin{code}
+\begin{lstlisting}[belowskip=-\baselineskip]
+BookSearchResultPage:
+  type: object
+  properties:
+    totalMaches:
+      type: integer
+      description: Total number of matched books
+    offset:
+      type: integer
+      description: Match offset for pagination
+    books:
+      type: array
+      items:
+        $ref: '#/components/schemas/Book'
+      description: Matching books
+\end{lstlisting}
+\end{code}
+\end{minipage}
+
+And to enable our consumers to make use of the paging result, we'll update our search endpoint:
+
+\begin{minipage}{\linewidth}
+\begin{code}
+\begin{lstlisting}[belowskip=-\baselineskip]
+/v1/books:
+  get:
+    summary: Search for books
+    operationId: retrieveBooks
+    parameters:
+    - name: title
+      in: query
+      description: Title match for book search
+      required: true
+      schema:
+        type: string
+    - name: offset
+      in: query
+      description: Match offset for retrieving next page of matching titles
+      required: false
+      schema:
+        type: integer
+    responses:
+      200:
+        description: Matching titles found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookSearchResultPage'
+\end{lstlisting}
+\end{code}
+\end{minipage}
+
+\emph{HTTP GET Summary:}
+
+\begin{itemize}
+  \item HTTP GET is for read only services and must not trigger object state change (side effects)
+  \item Model your resource URLs such that they are relative in the path when related, such as our \textit{/v1/books/\{isbn\}/copies}
+  \item When uniquely identifying a resource, the ID belongs on the URL path.  When filtering or searching for a matching set of resources, use query parameters.
+\end{itemize}
