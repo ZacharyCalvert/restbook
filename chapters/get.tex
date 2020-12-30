@@ -1,0 +1,61 @@
+\section{Planning for Change}
+
+Now we've modeled some of our RESTful objects, we're heading towards modeling our REST endpoint URLs.  Before we dig into the modeling, let's start by discussing some foundational topics.
+
+One thing a good system architect will always be ready for is change.  We plan for it because we know it will inevitably happen, either from design mistakes, technology updates, changes in feature requirements, new feature additions, etc.  Designing REST can set the level of preparedness for the inevitability of change.  We will version our endpoints, assuming that contract breaking changes will happen over the coming releases.  A hot topic will be do we place the version in the endpoint URL, or do we make use of HTTP Headers, or do we make use of subdomains.
+
+Three options commonly available:
+
+\begin{itemize}
+  \item http://www.example.com/v2/books/book
+  \item http://v2.example.com/books/book
+  \item http://www.example.com/books/book + HTTP Header such as X-Version: 2.0
+\end{itemize}
+
+My recommendation will be that you place the version in the URL, so /v2/books/book.  The benefits include:
+\begin{itemize}
+  \item Our access logs will include both the version of the API and the HTTP status code, so we can tell if we're getting errors on the old API we built or the new.
+  \item We can document multiple versions within the same Open API 3.0 contract.
+  \item An API Gateway can easily route traffic based on URL.
+  \item Common REST frameworks, such as Spring Boot, can isolate controllers by version of the API.
+\end{itemize}
+
+Do note, we're again discussing Art over Science, as all three flavors of versioning are viable.  The most important thing here is that you plan for change and have versioning prepared in your API contract at the very first iteration.
+
+\section{Resource URL}
+
+\textit{I as a Borrower need check on a book's availability so that I may know if the book I wish to checkout is available.}
+
+From this story, we can tell we want an endpoint to retrieve our BookAvailability resource.  Reaching out to our product owner, we query whether or not we would assume this shows up as part of a book search by title, or if we can assume they already have the unique ISBN.  For our purpose, we will assume a search has been a performed, the user selected from a list of matching titles, and now the client has the ISBN.  What we're looking to design here is the URL for book copy availability by ISBN.
+
+When modeling URLs for REST, there are many considerations to make.  First, is there one resource or multiple resources of the same type?  If the resource is plural, the URL should include a plural, such as /v1/books, or /v1/copies.  Second, is the operation uniquely identified by an identifier, meaning a result of one, or is it retrieval of the list of resources?  If a filtered list with potentially multiple non-unique results, use query parameters such as \url{/v1/books?title=REST}.  If we are looking to identify a unique book, we could model \textit{/v1/books/\{isbn\}} as our URL.
+
+Probably the trickiest portion of modeling a REST API's URLs is relative pathing for relational resources.  Take for example our BookCopy resource being a copy of a Book.  We could potentially model our URLs as \textit{/v1/books/\{isbn\}} and \textit{/v1/copies/\{isbn\}}.  We can also consider the relational aspect of a copy to a book and make copies a sub resource of books, such as \textit{/v1/books/\{isbn\}/copies}.  A guideline here is, \textit{choose the URL which is easier for the consumer to understand}.  If you took the \textit{/v1/copies/\{isbn\}} by itself, it isn't very expressive regarding a copy of what.  However, \textit{/v1/books/\{isbn\}/copies} is much more expressive indicating we're looking at copies of a book.
+
+\begin{minipage}{\linewidth}
+Choosing the more expressive endpoint, we can now model our happy-path book availability URL:
+
+\begin{code}
+\begin{lstlisting}[belowskip=-\baselineskip]
+paths:
+  /v1/books/{isbn}/copies:
+    get:
+      summary: Retrieve available copies of a given Book
+      operationId: retrieveAvailability
+      parameters:
+      - name: isbn
+        in: path
+        description: ISBN-13 book identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: ISBN found, server able to identify available copies of book identified by ISBN.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookAvailability'
+\end{lstlisting}
+\end{code}
+\end{minipage}

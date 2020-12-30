@@ -2,26 +2,30 @@
 
 As we dive into modeling our API for our first user stories, we'll be using Open API 3.  You can find the latest resources for Open API 3 at \url{https://github.com/OAI/OpenAPI-Specification}.  Take note that there is both a community and a business behind this modeling specification, \url{https://smartbear.com/}, and they are deserving of support.  The fastest way to begin modeling your API is by using their resources at \url{https://editor.swagger.io/}.
 
-When modeling a RESTful object state, pay careful consideration to the state being akin to a noun.  You should not have a component definition of GetSearchResult, it would just be SearchResult.
+When modeling a RESTful object state, pay careful consideration to the object state being akin to naming and describing a noun.  You should not have a component definition of GetSearchResult, it would just be SearchResult.
 
 \begin{sidebar}
 \begin{center}
 \textbf{Object State, Component, or Resource?}
 \end{center}
 
-Our modeling markdown choice of Open API 3.0 uses the label "component", REST labels it "object state", and URL is an acronym for uniform "resource" locator.  \textit{We will use component, resource, and object state interchangeably when discussing modeling the RESTful object.}
+Our modeling markdown choice of Open API 3.0 uses the label "component", REST labels it "state", and URL is an acronym for Uniform \underline{Resource} Locator.  \textit{We will use component, resource, and object state interchangeably when discussing modeling the RESTful object's properties.}
 
 \end{sidebar}
 
 \section{Modeling REST Object State}
 
-User Story:
+User Stories we will start with for resource modeling:
 
-\textit{I as a Borrower need check on a book's availability so that I may know if the book I wish to checkout is available.}
+\begin{itemize}
+  \item I as a Borrower need to check on a book's availability so that I may know if the book I wish to checkout is available.
+  \item I as a Borrower need to search for a book by title so that I may know if the book I wish to checkout is available.
+  \item I as an Admin need to reserve a copy of a book for a patron so that they may know it is available when they arrive.
+\end{itemize}
 
-Based on this user story, we know the resource we're looking to retrieve is a book.  From speaking with our product owner, and reviewing our user stories, we can tell we are speaking about a book copy.  We can also speak to our product owner regarding restrictions for this search.  Must the user be authenticated, or can an anonymous user inspect the availability for a certain title?  In this case, we're going to allow any unauthenticated user to research a book's availability.
+Based on these three user stories, we can go through and determine the resources we need to model.  We know we have a Book, or really a book's metadata.  We also know we have to model the physical copy of a text, such as a uniquely scannable barcode for a library to check-in and check-out.  We can then speak to our product owner regarding restrictions for the availability search.  Must the user be authenticated, or can an anonymous user inspect the availability for a certain title?  In this case, we're going to allow any unauthenticated user to research a book's availability.
 
-Let's start with some assumptions based on fictitious conversations with our product owner.  For our book search story, to be discussed later, we know that we want our books to be identified by title, authors, copyright date, and International Standard Book Number (ISBN-13).
+Let's start with some assumptions based on fictitious conversations with our product owner.  For our book, we know that we want to include title, authors, copyright date, and International Standard Book Number (ISBN-13).
 
 \begin{minipage}{\linewidth}
 We can start by modeling the applicable resources using Open API 3.0 YML.  This component YML can be placed within the editor at \url{https://editor.swagger.io} and you can review how the resulting object will look.
@@ -66,11 +70,11 @@ It is left up to the API designer to choose between camelCase, kebab-case (dashe
 \textbf{Yet Another Markup Language}
 \end{center}
 
-YAML, pronounced yam-el, is short for either "Yet Another Markup Language" or the recursive "YAML Ain't Markup Language" depending on who you ask.  It is becoming more and more common for specification and configuration files.  Golang, Python, Java, and others have parsers for it.  It is the most common configuration format for Spring Boot, now emitted by the Spring Boot initializers by default.  At its core it has the look and feel of Python because space matters, but it is a very clean, readable, and concise markup for configuration and now Open API 3.0 specification.  Expect to see APIs, potentially even REST APIs, offered with YML as the reply format.
+YAML, pronounced yam-el, is short for either "Yet Another Markup Language" or the recursive "YAML Ain't Markup Language" depending on who you ask.  It is becoming more and more common for specification and configuration files.  Golang, Python, Java, and others have parsers for it.  It is the most common configuration format for Spring Boot, now emitted by the Spring Boot initializers by default.  At its core it has the look and feel of Python because space matters, but it is a very clean, readable, and concise markup for configuration and now Open API 3.0 specification.
 
 \end{sidebar}
 
-So, with our book resource defined, we know we need to add a list of available copies, but when we go to edit a book, are we editing a book or a copy the library has?  If you were paying very close attention, you likely noticed that we have a book resource, and a copy resource.  They are not the same thing.  This is the first curveball of our REST definition, of which we will encounter many.  Simple user stories lead to quite a bit of complexity in API design, but with some careful planning, you can navigate and make your team of engineers' lives much easier.
+So, with our book resource defined, we know we need to add a list of available copies.  So, why can't we just put a list of copies on the Book resource itself?  The argument can even be made in the is-a vs has-a relationship OOP model that a copy of a book is-a book, so from a polymorphic language a book copy could just inherit from Book.  You would be correct.  However, when we're modeling our REST endpoint URLs, searching for books by title vs retrieving available copies by ISBN will have different URL paths.  It would be completely acceptable to start modeling resources, then get to the endpoints, and come to the conclusion that when modeling your endpoints you want to split up the object instead of treating it as an inherited object.  An Object-Oriented Programming (OOP) purist would even struggle with the Book labeling, and show that it should really be something along the lines of BookMeta, or BookDescriptors.
 
 \begin{minipage}{\linewidth}
 \begin{code}
@@ -91,7 +95,11 @@ components:
 \end{code}
 \end{minipage}
 
-OK, so we're still at an awkward place in terms of defining number of available copies.  Would we include that on the book?  Well that's not the right place.  Would we include that on a copy?  Well no, we expect a book copy to be singular.  What we're uncovering is that we have a read-only object to define, a resulting resource from a search.  You will commonly find that search results require a defined component which feels out of place because it won't map into your back-end system's object storage.  This is where the back-end focused architects may struggle and where consumer-driven-contracts becomes key.  We care about our consumers' needs first.  That said, our result needs to be a search result.
+Now we've really muddied the waters of OOP by including ISBN in our BookCopy.  Again the question comes up, does a BookCopy have a Book?  Technically, we're not in OOP here.  When we're modeling object state for REST, we want lean results, driven by consumer needs.  On the one hand, OOP would decry this approach.  In our case, we want to be mindful of the fact that the Book object may grow and grow, impacting network costs when returning say an array of BookCopy results when providing an endpoint for all of the available copies assigned to a library.  Imagine the Library of Congress, which could have 50 copies of \textit{Catcher in the Rye}.  If I was to request all BookCopies for \textit{Catcher in the Rye}, I would not want the full Book object embedded within every element of the array.  The reality is, this is a bit of a balancing act.  You could also strip away the referential ISBN between BookCopy and Book, but then you would have no means to scan a book's barcode, look up the copy by barcode, and relate it to a Book.
+
+That feeling of "that's not right", is because we're breaking typical OOP, and there are no hardened rules here.  Networking costs, balancing referential data between objects, staying focused on client user stories, it is a bit of a complex burden.  For such a simple, ancient problem of modeling and architecting a library's set of RESTful endpoints, there's a lot to consider and a lot to model.
+
+All of that said, we're still at an awkward place in terms of defining number of available copies.  Would we include available count on the Book?  Well that's not the right place because we've chosent to split up Book and BookCopy.  Would we include available count on a BookCopy?  Well no, we expect a book copy to be singular.  What we're uncovering is that we have a read-only object to define, a resulting resource from a search.  You will commonly find that search results require a defined component which feels out of place because it won't map into your back-end system's object storage.  This is where the back-end focused architects may struggle and where consumer-driven-contracts becomes key.  We care about our consumers' needs first.  That said, our result needs to be a search result.
 
 \begin{minipage}{\linewidth}
 \begin{code}
@@ -117,14 +125,10 @@ components:
 \end{code}
 \end{minipage}
 
-\begin{sidebar}
-\begin{center}
-\textbf{Art Over Science}
-\end{center}
-
 Looking at this BookAvailability definition for a search result, we would have a debate over if the result should include ISBN.  Let's suppose that we are planning to provide an endpoint to find available copies by ISBN, why would we echo the ISBN back?  If there's a reason, why not just echo the entire Book component back and include the title, the author, etc.
 
-This is where a choice of style comes into play, and engineers will disagree.  My opinion is that when our browser-based clients are constructing asynchronous JavaScript processing results in promise blocks, debugging will be much easier for them if there is a reference between search result and search text.  Should that be the full Book component?  Perhaps, but you can also make the case that the Book will likely grow and grow over time and feature requests, say maybe include pages, publisher information, secondary publishing details, etc.
+Again, this is where a choice of style comes into play, and engineers will disagree.  My opinion is that when our browser-based clients are constructing asynchronous JavaScript processing results in promise blocks, debugging will be much easier for them if there is a reference between search result and search text.  Developer tools showcasing the network request/response data will also be easier to trace when including relational data.  Should the relational data be the full Book component?  Perhaps, but you can also make the case that the Book will likely grow and grow over time and feature requests, say maybe include pages, publisher information, secondary publishing details, etc.
 
 There are merits to include the ISBN, not include the ISBN, and provide a full embedded result of the Book that was used for searching available copies.  All three are right, and all three have reasons to be wrong, and that tells us that some of our decisions here are going to be Artistic and not Scientific.
-\end{sidebar}
+
+If these modeling decisions were left to a committee of architects, I'd anticipate quite a bit of argument here.  The joys of having too many cooks in the kitchen.  

@@ -1,3 +1,6 @@
+Hammer in:
+- result paging (search result paging)
+
 Introduction
 	- What is REST
 	- History, JSP, to SOAP, to browser-client SOAP, to JSON, to REST
