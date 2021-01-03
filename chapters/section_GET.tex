@@ -1,28 +1,10 @@
-\section{Planning for Change}
+\chapter{REST Verbs}
 
-Now we've modeled some of our RESTful objects, we're heading towards modeling our REST endpoint URLs.  Before we dig into the modeling, let's start by discussing some foundational topics.
+As we move into describing REST verbs, we will make some assumptions that context information will be
 
-One thing a good system architect will always be ready for is change.  We plan for it because we know it will inevitably happen, either from design mistakes, technology updates, changes in feature requirements, new feature additions, etc.  Designing REST can set the level of preparedness for the inevitability of change.  We will version our endpoints, assuming that contract breaking changes will happen over the coming releases.  A hot topic will be do we place the version in the endpoint URL, or do we make use of HTTP Headers, or do we make use of subdomains.
+\section{REST GET}
 
-Three options commonly available:
-
-\begin{itemize}
-  \item http://www.example.com/v2/books/book
-  \item http://v2.example.com/books/book
-  \item http://www.example.com/books/book + HTTP Header such as X-Version: 2.0
-\end{itemize}
-
-My recommendation will be that you place the version in the URL, so /v2/books/book.  The benefits include:
-\begin{itemize}
-  \item Our access logs will include both the version of the API and the HTTP status code, so we can tell if we're getting errors on the old API we built or the new.
-  \item We can document multiple versions within the same Open API 3.0 contract.
-  \item An API Gateway can easily route traffic based on URL.
-  \item Common REST frameworks, such as Spring Boot, can isolate controllers by version of the API.
-\end{itemize}
-
-Do note, we're again discussing Art over Science, as all three flavors of versioning are viable.  The most important thing here is that you plan for change and have versioning prepared in your API contract at the very first iteration.
-
-\section{Resource URL}
+Moving on to our first modeled endpoint, let's review the user story.
 
 \textit{I as a Borrower need check on a book's availability so that I may know if the book I wish to checkout is available.}
 

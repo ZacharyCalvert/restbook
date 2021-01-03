@@ -1,0 +1,23 @@
+\section{Modeling Endpoints}
+
+When designing your REST endpoint, start by identifying the nouns which we can describe state for.  In our case study, we have books and book copies.  In a much more complete application plan, we'd also have users, libraries, publishers, and potentially more.  Start by determining the object states your consumers are going to need to retrieve, and then model that as a collection.  For example, \textit{/books} and \textit{/copies}.  When describing a collection of resources such as books or copies, use the plural in the URI and treat the identifier as a path component.  For example, \textit{/books/book-id} and \textit{/copies/copy-barcode}.
+
+One thing a good system architect will always be ready for is change.  We plan for it because we know it will inevitably happen, either from design mistakes, technology updates, changes in feature requirements, new feature additions, etc.  Designing REST can set the level of preparedness for the inevitability of change.  We will version our endpoints, assuming that contract breaking changes will happen over the coming releases.  A hot topic will be do we place the version in the endpoint URL, or do we make use of HTTP Headers, or do we make use of subdomains.
+
+Three options commonly available:
+
+\begin{itemize}
+  \item http://www.example.com/v2/books/book
+  \item http://v2.example.com/books/book
+  \item http://www.example.com/books/book + HTTP Header such as X-Version: 2.0
+\end{itemize}
+
+My recommendation will be that you place the version in the URL, so /v2/books/book.  The benefits include:
+\begin{itemize}
+  \item Our access logs will include both the version of the API and the HTTP status code, so we can tell if we're getting errors on the old API we built or the new.
+  \item We can document multiple versions within the same Open API 3.0 contract.
+  \item An API Gateway can easily route traffic based on URL.
+  \item Common REST frameworks, such as Spring Boot, can isolate controllers by version of the API.  This will allow one application to process both contract versions.
+\end{itemize}
+
+Our choice of placing the version into the URL is Art over Science, as all three flavors of versioning are viable.  The most important takeaway is that you plan for change and have versioning prepared in your API contract at the very first iteration.  I warn that there are architects who will disagree with this approach and expect the version to be described as an HTTP header because the version is contextual, and they're right.  There are others that will want the version to be placed in the domain, so they can manage routing the request by domain, and they too are right.

@@ -1,0 +1,29 @@
+\section{HTTP Methods and REST}
+
+When speaking to or as a system architect, HTTP Methods are known as REST Verbs.  It is the action you are taking against the resource.  You're posting it, getting it, putting it, or deleting it, so the terminology is appropriate.  HTTP Method and REST Verbs are interchangeably used in REST API architecture conversations.
+
+The most common RESTful verbs for mapping out create-read-update-delete (CRUD) operations are GET, PUT, POST, and DELETE.  There is a lesser known PATCH operation used as well, which serves as a sparse data update.  Finally, you will encounter OPTIONS when using REST services from a browser, particularly when going across domains, say from www.example.com hitting an API offered using a subdomain such as rest-api.example.com.
+
+To provide a quick preview, HTTP GET is object retrieval or collection search, and shouldn't incur any side effects.  It is imperative, from a security perspective even, that HTTP GET methods inflict no change.  Why?  The fastest answer to give would be that some services still leverage long-lived session cookies for user identity.  Imagine I am a customer at a bank, and they have my authenticated session stored as a cookie in my browser, and I happen upon an emailed link which works along the lines of \textit{/transfer/to?account=hackers\&amount=500.00} which says "click to see video here" as the presented text in the email.  Bad day.  Just don't incur changes to object state as a GET.  Form posts will incur OPTIONS requests, which we will discuss at length within a later section.
+
+HTTP POST is meant for resource creation.  HTTP PUT is for resource update \textit{or resource creation}.  We will discuss why PUT can be used for resource creation in depth in a later section. HTTP DELETE is for deletions or cancellation.  Finally, HTTP PATCH should be used for a sparsely filled updates against large resources, or content that is easier for the client to update portions of the resource instead of the whole resource.  Expect a much more thorough explanation in the coming chapters.
+
+\begin{sidebar}
+\begin{center}
+\textbf{Security First}
+\end{center}
+
+The security aspects of designing a RESTful API are presented within this book after presenting the foundational concepts.  This is not the correct approach to take when designing an API.  Security must be a first class citizen when preparing RESTful services.  Whether secured via an API gateway enforcing access controls or building a zero-trust network of microservices, know your security approach before you start implementing.  Retrofitting security into insecure APIs is a mistake and one that could cost your company dearly.  Your clients will need to know your identity provider, you will need to know how to validate the principal, you will need to know how to determine level of authorization, and you will need to have a plan for non-prod test accounts and test credential automation for integration testing.
+
+\end{sidebar}
+
+\emph{Method Summary:}
+
+\begin{itemize}
+  \item HTTP Methods GET, PUT, POST, DELETE, and PATCH are also known as REST verbs.
+  \item HTTP GET methods are read-only must incur no side effects to the object state.
+  \item HTTP POST is create.
+  \item HTTP PUT is update or create.
+  \item HTTP DELETE is deletion or cancellation.
+  \item HTTP PATCH is sparse update.
+\end{itemize}

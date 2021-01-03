@@ -74,25 +74,25 @@ hello world
 \end{lstlisting}
 \end{code}
 
-From the client initial request, we have \textit{GET / HTTP/1.1} which indicates the HTTP Method of \textit{GET}, the resource requested \textit{/}, and the protocol and protocol version \textit{HTTP 1.1}.  Following the method, resource, and protocol, we have a list of key value pairs known as HTTP headers indicating our language, our client, what the target host is, and more.
+From the client initial request, we have \textit{GET / HTTP/1.1} which indicates the HTTP Method of \textit{GET}, the resource requested \textit{/}, and the protocol and protocol version \textit{HTTP 1.1}.  Following the method, resource, and protocol, we have a list of key-value pairs known as HTTP headers indicating our language, our client, what the target host is, and more.
 
-From the server reply, we have a similar \textit{HTTP/1.1 200 OK} which tells us the protocol version we're replying with, a status code of \textit{200 OK}, followed by similar key value pairs of headers which tells us information about the server, how big the server reply is, when it was last modified, and the type of content being returned.  Finally, we have the body of the request which includes the text placed into index.html of \textit{hello world}.
+From the server reply, we have a similar \textit{HTTP/1.1 200 OK} which tells us the protocol version we're replying with, a status code of \textit{200 OK}, followed by similar key-value pairs of headers which tells us information about the server, how big the server reply is, when it was last modified, and the type of content being returned.  Finally, we have the body of the request which includes the text placed into index.html of \textit{hello world}.
 
 To understand REST and how it works, it is important to grasp that we are moving towards conventions of these resources, status codes, bodies, methods, and headers to map out a plan for transferring state of resources.  In the crash course introduction for REST:
 \begin{itemize}
-  \item The resource is a noun.  For example a URL of \textit{/v1/books/123-567} may be a fetch of a book with ISBN 123-567.
-  \item The code tells you if the operation succeeded or failed.  For example, \textit{201 Created} tells you a resource was Created.
-  \item The headers convey context.  Context is anything outside of the resource being retrieved or modified, such as user or browser.
-  \item The body conveys the state.  It is a state transfer.
+  \item The Uniform Resource Locator (URL) identifies the target object or collection of objects.  For example a URL of \textit{/v1/books/123-567} may be a fetch of a book with ISBN 123-567.
+  \item The HTTP status code tells you if the operation succeeded or failed.  For example, \textit{201 Created} tells you a resource was Created.
+  \item The HTTP headers convey context both for the client and for the server.  Context is anything outside of the object state being retrieved or modified, such as user or browser.
+  \item The body conveys the current state, the state to change to, or the edit being requested.
 \end{itemize}
 
 \section{What is REST?}
 
 For the textbook answer, REST is short for Representational State Transfer, an architectural pattern for HTTP web services that was originally presented by Roy Fielding in 2000 \cite{fielding}.  Over time it has transitioned into transactional-like definition of services, playing to the dynamic needs of web content and native clients.  For those who grimace at the "transactional-like", your status codes are your error code / success code equivalent, and still I'm sure some readers will gag at the notion.
 
-At its heart, REST drives home web-service CRUD (create, read, update, delete) operations into standardized methods.  REST is another step forward in the convention-over-configuration direction that developers started when moving from build scripts written in ANT.xml to Maven and Gradle.  Status codes dictated by w3c committees are used to quickly convey success/failure.  Headers are used to carry context instead of state, including identity and authorization.  Target state is transferred to the server via the request body, and the result state is transferred to the client in the result body.
+At its heart, REST describes convention of CRUD (create, read, update, delete) operations into standardized methods.  REST is another step forward in the convention-over-configuration direction that developers started when moving from build scripts written in ANT XML to Maven and Gradle.  Status codes dictated by W3C committees are used to quickly convey success/failure.  Headers are used to carry context instead of state, including identity and authorization.  Target state is transferred to the server via the request body, and the result state is transferred to the client in the result body.
 
-If you've ever tried to use native protocols, or someone's home-grown socket solution, you'll appreciate the semi-consistent feel of a good REST API.
+If you've ever tried to use native protocols, or someone's home-grown socket solution, you'll appreciate the consistent feel of a well-written REST API.
 
 \section{We tried this before...}
 
@@ -168,7 +168,7 @@ Finally, our less-verbose, browser and user-friendly JSON equivalent:
 
 \end{sidebar}
 
-SOAP has a rather lengthy and sordid history, which is not the focus of this book, but it is worth touching upon.  SOAP was a rather loose concept of standardizing XML, conveying context such as username and passwords, the request, and the action being performed.  All of it was XML and different architects would inevitably have very different approaches.  Context information such as session, user, password, and more could be found as HTTP Headers, within the SOAP Envelope, or even within the SOAP Body.  SOAP was verbose, machine-friendly very browser unfriendly, not very developer-friendly, and very fragmented.  There are certainly more issues with SOAP, but you get the point.
+SOAP has a rather lengthy and sordid history, which is not the focus of this book, but it is worth touching upon.  SOAP was a rather loose concept of standardizing XML, conveying context such as username and passwords, the request, and the action being performed.  All of it was XML and different architects would inevitably have very different approaches.  Context information such as session, user, password, and more could be found as HTTP Headers, within the SOAP Envelope, or even within the SOAP Body.  SOAP was verbose, machine-friendly, JavaScript unfriendly, not very developer-friendly, and fragmented.  There are certainly more issues with SOAP, but you get the point.
 
 \begin{minipage}{\linewidth}
 So, with SOAP, we migrated an XML API architecture approaching something along the lines of
@@ -199,34 +199,12 @@ Ultimately, it rapidly progresses into something luxurious that supports mobile 
 
 \begin{sidebar}
 \begin{center}
-\textbf{Hidden Pieces}
+\textbf{Hidden Services}
 \end{center}
 
-Do note, this diagram is completely missing big ticket items like scalable block storage, databases, eventing systems, messaging systems, and more.  The focus is in the most commonly found mechanism exposed to our clients and even intra-server communication.
+Do note, this diagram is completely missing big ticket items like scalable block storage, databases, eventing systems, messaging systems, and more.  The point being made is that client-to-server and server-to-server communication channels moved from fragmented APIs and standards to consistent channels of REST communication.
 
 \end{sidebar}
-
-\section{Consumer Driven Contracts}
-
-A noteworthy design concept to touch upon before we start designing our API is Consumer Driven Contracts, which we will use throughout our design process.  Presenting theory for the pattern for Consumer Driven Contract is quite simple.  The consumer's needs drive the contract of the resulting API.
-
-The idea of Consumer Driven Contracts is not new to REST API engineers.  Many SOAP and other TCP services are built with the consumer in mind, but it is worth revisiting for architects planning out RESTful APIs.  At its core, the concept of Consumer Driven Contracts places the burden on the back-end engineers to write the service once, so that the N number of client integrators don't have to rewrite the business logic to accomplish the same task.  The ideal thin client is facilitated by a clean API answering its requirements sufficiently and cleanly.
-
-While the architect for APIs tends to be experienced back-end systems engineers, there is quite a bit of merit to assigning the front-end engineers as the designers. Consumer-Driven Contracts places the burden on the back-end teams to develop systems which hide the complexity through a consumer friendly API. We will hide all of the legacy, all of the technical debt, and all of the poor technology choices behind a clean API meant to enable clients to quickly integrate to.
-
-Our goal for clients is fast adoption so that we can build native and browser apps for Android, iOS, desktop, and command-line consumers.  In addition, thought is given to scenarios where your consumers may be other microservice apps.
-
-When designing an API, it is imperative you have a notion of your consumers, be them microservices, native clients, or terminal system admins.  More importantly, even if you're the developer working on the back-end providing the API offering, you must know the user stories and use cases driving the need for your implementation. Take for example the following user story for a library:
-
-\textit{I as a library administrator need to determine the availability of a book by ISBN so that I may answer availability questions regarding a title.}
-
-This user story could lead to a very different API offering than:
-
-\textit{I as a system need to obtain the list of book copies by ISBN so that I may determine if too many books have been purchased and should be offered for sale.}
-
-The librarian needs to know what's available right now, but the system may need how many are checked out and how many are owned by the library in total.  You can answer both needs with the same REST endpoint, but notice how the system story expands the scope of the resulting API to include copy counts.  Proper planning given into the final API may result in reduced work performed by the system teams to cover the breadth of the user stories.
-
-The argument can be made that this approach smells like a waterfall planning model verses feature planning for an Agile sprint, and you'd be correct.  That said, an architect with a few discussions with a product owner can plan out a strong API in a single sprint, without having to scope the entire project out in a waterfall model.  That doesn't mean the API won't change, and that doesn't mean the API will be perfect, but the planning can pay off in big ways.
 
 \section{Case Study: Library}
 
