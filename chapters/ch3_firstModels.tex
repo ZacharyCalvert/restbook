@@ -1,10 +1,8 @@
-\chapter{REST Verbs}
-
-As we move into describing REST verbs, we will make some assumptions that context information will be
+\chapter{First Models}
 
 \section{REST GET}
 
-Moving on to our first modeled endpoint, let's review the user story.
+We will design our first REST GET endpoint by starting with our user story.
 
 \textit{I as a Borrower need check on a book's availability so that I may know if the book I wish to checkout is available.}
 
@@ -44,9 +42,11 @@ paths:
 
 Now we've modeled our object state as well as URL for checking on availability.  Let's move on to our search story.
 
+\section{Search Results}
+
 \textit{I as a Borrower need to search for a book by title so that I may know if the book I wish to checkout is available.}
 
-Given we've already defined an enpoint of \textit{/v1/books/\{isbn\}/copies}, we can see we're not looking to search for copies, we're looking to search on books.  Our endpoint for REST modeling here would be attached to \textit{/v1/books}.  We're looking to model a search capability for our Borrower actor, and we know they don't know the ISBN off of the top of their head.  When you can't uniquely identify the resource by ID and your case requires filtering or searching, use query parameters.   In this case, we will model the endpoint with a title query parameter.
+Given we've already defined an endpoint of \textit{/v1/books/\{isbn\}/copies}, we can see we're not looking to search for copies, we're looking to search on books.  Our endpoint for REST modeling here would be attached to \textit{/v1/books}.  We're looking to model a search capability for our Borrower actor, and we know they don't know the ISBN off of the top of their head.  When you can't uniquely identify the resource by ID and your case requires filtering or searching, use query parameters.   In this case, we will model the endpoint with a title query parameter.
 
 \begin{minipage}{\linewidth}
 
@@ -55,7 +55,7 @@ Given we've already defined an enpoint of \textit{/v1/books/\{isbn\}/copies}, we
 /v1/books:
   get:
     summary: Search for books
-    operationId: retrieveBooks
+    operationId: searchBooks
     parameters:
     - name: title
       in: query
@@ -76,7 +76,7 @@ Given we've already defined an enpoint of \textit{/v1/books/\{isbn\}/copies}, we
 \end{code}
 \end{minipage}
 
-Reviewing our resource, we can question how many matches could we afford before it becomes a problem.  What happens if our user searches for "The"?  Coordinating with product owner, our library search feature is problematic because we can't answer with the entire library full of books, and the UI direction is to allow for drop-down matching when additional letters are typed.  Again, leaning on a fake conversation, let's generate a paged result for the search result.
+Reviewing our resource, we can question how many matches could we afford before it becomes a problem.  What happens if our user searches for "The"?  Coordinating with product owner, our library search feature is problematic because we can't answer with the entire library in a single HTTP response, and the UI direction is to allow for drop-down matching when additional letters are typed.  Let's generate a paged result component for the search result.
 
 \begin{minipage}{\linewidth}
 
@@ -88,9 +88,12 @@ BookSearchResultPage:
     totalMaches:
       type: integer
       description: Total number of matched books
+    limit:
+      type: integer
+      description: Maximum number of books returned in a paged result
     offset:
       type: integer
-      description: Match offset for pagination
+      description: Matching Book offset for pagination
     books:
       type: array
       items:
@@ -140,3 +143,9 @@ And to enable our consumers to make use of the paging result, we'll update our s
   \item Model your resource URLs such that they are relative in the path when related, such as our \textit{/v1/books/\{isbn\}/copies}
   \item When uniquely identifying a resource, the ID belongs on the URL path.  When filtering or searching for a matching set of resources, use query parameters.
 \end{itemize}
+
+\section{REST POST}
+\section{REST PUT}
+\section{Idempotent PUT vs POST}
+\section{REST PATCH}
+\section{REST DELETE}

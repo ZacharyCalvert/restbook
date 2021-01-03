@@ -1,13 +1,13 @@
 \chapter{Basics of Modeling REST}
 
-As we dive into modeling our API for our first user stories, we'll be using Open API 3.  You can find the latest resources for Open API 3 at \url{https://github.com/OAI/OpenAPI-Specification}.  Take note that there is both a community and a business behind this modeling specification, \url{https://smartbear.com/}, and they are deserving of support.  The fastest way to begin modeling your API is by using their resources at \url{https://editor.swagger.io/}.
+As we dive into modeling the API for our first user stories, we'll be using Open API 3.  You can find the latest resources for Open API 3 at \url{https://github.com/OAI/OpenAPI-Specification}.  Take note that there is both a community and a business behind this modeling specification, \url{https://smartbear.com/}, and they are deserving of support.  The fastest way to begin modeling your API is by using their resources at \url{https://editor.swagger.io/}.
 
 \begin{sidebar}
 \begin{center}
 \textbf{Open API 3}
 \end{center}
 
-We will leverage Open API 3 specification to model our REST API, but this is not a book diving into the full specification of it.  You can read the full specification in an hour and it is worth doing so after you've ready this book.  Our goal here is to present a model of REST endpoints without selecting a programming language to implement it in.  There are a few leaders in the modeling options including RAML, Open API 3, Swagger 2, and API Blueprint.
+We will leverage Open API 3 specification to model our REST API, but this is not a book diving into the full specification of it.  You can read the full specification in an hour and it is worth doing so after you've ready this book.  Our goal here is to present a model of REST endpoints without selecting a programming language to implement it in.  There are a few leaders in the modeling options including RAML, Open API 3, Swagger 2, and API Blueprint.  Visit \url{https://github.com/OAI/OpenAPI-Specification} for the full specification.
 
 \end{sidebar}
 
@@ -104,7 +104,7 @@ components:
 \end{code}
 \end{minipage}
 
-By including the ISBN in our BookCopy, we're violating data duplication tenets OOP.  Again the question comes up, does a BookCopy have a Book?  Technically, we're not in OOP here.  When we're modeling object state for REST, we want lean results, driven by consumer needs.  On the one hand, OOP would decry this approach.  In our case, we want to be mindful of the fact that the Book object may grow and grow, impacting network costs when returning say an array of BookCopy results when providing an endpoint for all of the available copies assigned to a library.  Imagine the Library of Congress, which could have 50 copies of \textit{Catcher in the Rye}.  If I was to request all BookCopies for \textit{Catcher in the Rye}, I would not want the full Book object embedded within every element of the array.  The reality is, this is a bit of a balancing act.  You could also strip away the referential ISBN between BookCopy and Book, but then you would have no means to scan a book's barcode, look up the copy by barcode, and relate it to a Book.
+By including the ISBN in our BookCopy, we're violating data duplication tenets of OOP.  Again the question comes up, does a BookCopy have a Book?  Technically, we're not in OOP here.  When we're modeling object state for REST, we want lean results, driven by consumer needs.  On the one hand, OOP would decry this approach.  In our case, we want to be mindful of the fact that the Book object may grow and grow, impacting network costs when returning say an array of BookCopy results when providing an endpoint for all of the available copies assigned to a library.  Imagine the Library of Congress, which could have 50 copies of \textit{Catcher in the Rye}.  If I was to request all BookCopies for \textit{Catcher in the Rye}, I would not want the full Book object embedded within every element of the array.  The reality is, this is a bit of a balancing act.  You could also strip away the referential ISBN between BookCopy and Book, but then you would have no means to scan a book's barcode, look up the copy by barcode, and relate it to a Book.
 
 That feeling of "that's not right", is because we're breaking typical OOP, and there are no hardened rules here.  Networking costs, balancing referential data between objects, staying focused on client user stories, it is a bit of a complex burden.  For such a simple, ancient problem of modeling and architecting a library's set of RESTful endpoints, there's a lot to consider and a lot to model.
 
@@ -149,3 +149,8 @@ If these modeling decisions were left to a committee of architects, I'd anticipa
   \item Designing RESTful object state is as much art as science.
   \item Object state should be labeled as a resulting noun (person, place, or thing) and not be prefixed by a verb for the interaction.  Use Book instead of GetBook.
 \end{itemize}
+
+\input{chapters/sections/ch2_methods}
+\input{chapters/sections/ch2_endpoints}
+\input{chapters/sections/ch2_cdc}
+\input{chapters/sections/ch2_consistency}

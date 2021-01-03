@@ -1,7 +1,8 @@
-\chapter{Brief Introduction}
-\section{HTML Fetch}
+\chapter{Introduction}
 
-Bear with the start as we go run through a bit of history with browser requests and page loads, and know we will quickly move into REST examples and get into our case study.
+A bit of history is important to understand why REST, and why we design endpoints the way we do.  It is important to understand browser requests and page loads, but we will quickly move into REST examples and get into our case study.
+
+\section{HTML Fetch}
 
 Diving right in, I have a TCP packet capture intercepting traffic on port 8080.  I'm running an nginx docker container, which is serving a single index.html static page at \url{http://localhost:8080/index.html}. Ignore docker, ignore port 8080, ignore nginx, just know that on my local machine I have a service running which works like any website and am capturing the request and response between my browser and the local service.
 
@@ -36,7 +37,9 @@ Opening my FireFox browser to \url{http://localhost:8080/index.html}, I receive 
 I discovered the hard way that WireShark may get you in trouble from overzealous IT admins in the workplace.  WireShark defaults to running in promiscuous mode, which allows you to capture any traffic your network interface card (NIC) receives, which may include unencrypted traffic intended for other receivers.  Some work environments monitor for services running in promiscuous mode, attempting to identify network adversaries (hackers) and corporate espionage.  Other workplaces monitor for installations of WireShark and other hacker-friendly tools.  I recommend avoiding WireShark installations without explicit written approval.
 \end{sidebar}
 
-Examining the packet capture, we can see the following traffic:
+Examining the packet capture, we can see the following traffic.
+
+\begin{minipage}{\linewidth}
 
 \textit{Browser client to server:}
 
@@ -74,11 +77,13 @@ hello world
 \end{lstlisting}
 \end{code}
 
+\end{minipage}
+
 From the client initial request, we have \textit{GET / HTTP/1.1} which indicates the HTTP Method of \textit{GET}, the resource requested \textit{/}, and the protocol and protocol version \textit{HTTP 1.1}.  Following the method, resource, and protocol, we have a list of key-value pairs known as HTTP headers indicating our language, our client, what the target host is, and more.
 
 From the server reply, we have a similar \textit{HTTP/1.1 200 OK} which tells us the protocol version we're replying with, a status code of \textit{200 OK}, followed by similar key-value pairs of headers which tells us information about the server, how big the server reply is, when it was last modified, and the type of content being returned.  Finally, we have the body of the request which includes the text placed into index.html of \textit{hello world}.
 
-To understand REST and how it works, it is important to grasp that we are moving towards conventions of these resources, status codes, bodies, methods, and headers to map out a plan for transferring state of resources.  In the crash course introduction for REST:
+To understand REST and how it works, it is important to grasp that we are moving towards conventions of these URLs, HTTP status codes, request and response bodies, HTTP methods, and HTTP headers to map out a plan for transferring state of resources.  In the crash course introduction for REST:
 \begin{itemize}
   \item The Uniform Resource Locator (URL) identifies the target object or collection of objects.  For example a URL of \textit{/v1/books/123-567} may be a fetch of a book with ISBN 123-567.
   \item The HTTP status code tells you if the operation succeeded or failed.  For example, \textit{201 Created} tells you a resource was Created.
@@ -181,7 +186,7 @@ This is still before mobile phones are a thing.  The web continues to grow and u
 
 \includegraphics{soap2}
 
-The problem compounds as the page complexity grows and now you have browser-friendly XML APIs and server SOAP APIs.  Inevitably the clients on both browsers and servers, for browser-to server and server-to-server communication needs to become more consistent and more consumer friendly.  Concurrently to all of this nasty fragmentation, browser engineers start forcing the issue with JavaScript Object Notation (JSON).
+The problem compounds as the page complexity grows and now you have browser-friendly XML APIs and server SOAP APIs.  Inevitably the clients on both browsers and servers, for browser-to-server and server-to-server communication needs to become more consistent and more consumer friendly.  Concurrently to all of this nasty fragmentation, browser engineers start forcing the issue with JavaScript Object Notation (JSON).
 
 In quick succession, smart (and staffed) companies pull this stunt:
 

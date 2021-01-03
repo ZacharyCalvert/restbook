@@ -7,14 +7,14 @@ One thing a good system architect will always be ready for is change.  We plan f
 Three options commonly available:
 
 \begin{itemize}
-  \item http://www.example.com/v2/books/book
-  \item http://v2.example.com/books/book
-  \item http://www.example.com/books/book + HTTP Header such as X-Version: 2.0
+  \item http://www.example.com/v2/books/book-id
+  \item http://v2.example.com/books/book-id
+  \item http://www.example.com/books/book-id + HTTP Header such as X-Version: 2.0
 \end{itemize}
 
-My recommendation will be that you place the version in the URL, so /v2/books/book.  The benefits include:
+My recommendation will be that you place the version in the URL, so \textit{/v2/books/book-id}.  The benefits include:
 \begin{itemize}
-  \item Our access logs will include both the version of the API and the HTTP status code, so we can tell if we're getting errors on the old API we built or the new.
+  \item Our site access logs will include both the version of the API and the HTTP status code, so we can tell if we're getting errors on the old API we built or the new.
   \item We can document multiple versions within the same Open API 3.0 contract.
   \item An API Gateway can easily route traffic based on URL.
   \item Common REST frameworks, such as Spring Boot, can isolate controllers by version of the API.  This will allow one application to process both contract versions.

@@ -1,8 +1,6 @@
-
-
 \section{Consumer Driven Contracts}
 
-A noteworthy design concept to touch upon before we start designing our API is Consumer Driven Contracts, which we will use throughout our design process.  Presenting theory for the pattern for Consumer Driven Contract is quite simple.  The consumer's needs drive the contract of the resulting API.
+A core API design tenet to touch upon before we start designing our API is Consumer Driven Contracts, which we will use throughout our design process.  Presenting theory for the pattern for Consumer Driven Contract is quite simple:  \textit{the consumer's needs drive the contract of the resulting API.}
 
 The idea of Consumer Driven Contracts is not new to REST API engineers.  Many SOAP and other TCP services are built with the consumer in mind, but it is worth revisiting for architects planning out RESTful APIs.  At its core, the concept of Consumer Driven Contracts places the burden on the back-end engineers to write the service once, so that the N number of client integrators don't have to rewrite the business logic to accomplish the same task.  The ideal thin client is facilitated by a clean API answering its requirements sufficiently and cleanly.
 

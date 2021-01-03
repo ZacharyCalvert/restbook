@@ -1,0 +1,9 @@
+\section{Consistency is Key}
+
+Chances are, when planning out your API's context that most of what you're doing isn't unique.  It has been done before and chances are it has been standardized and documented.  Leverage web searches to find common header HTTP header labels and HTTP status codes.
+
+If you're looking for an appropriate status code for your client's failure, say from providing an expired authentication, that's going to be a 401 and you're quickly led to that conclusion with a quick search.  You can find a quick run-down of common status codes at \url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Status}.
+
+For tracing and correlation of requests and client session activity, it has again been done before.  See \url{https://en.wikipedia.org/wiki/List_of_HTTP_header_fields} which will lead you to \textit{X-Request-ID} and \textit{X-Correlation-ID}.
+
+The point is that if what you're designing is primarily contextual or technical, not related to your API's custom object state, try to stick to common headers and status codes.  Your consumers will thank you for it.

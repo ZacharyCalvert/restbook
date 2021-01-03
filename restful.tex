@@ -102,20 +102,64 @@
 \input{chapters/dedication}
 \clearpage
 
-\input{chapters/preface}
+\input{chapters/ch0_preface}
 
 \clearpage
 \mainmatter
 \pagenumbering{arabic}
-\input{chapters/introduction}
-\input{chapters/basicsObject}
-\input{chapters/basicsMethod}
-\input{chapters/basicsEndpoint}
+\input{chapters/ch1_intro.tex}
+\input{chapters/ch2_basics.tex}
+\input{chapters/ch3_firstModels.tex}
 
-\chapter{REST Verbs}
-Moving right along, we will begin modeling REST stories 
-\input{chapters/section_CDC}
-\input{chapters/section_GET}
+%%% WIP Outline
+\chapter{Status Codes}
+\section{1xx-5xx}
+\section{Success!}
+\section{Bad Client!}
+\section{Bad Server!}
+
+\chapter{Headers and Context}
+\section{Client Information and Correlation}
+X-Request-ID, X-Correlation-ID
+What client -> who to update?
+\section{Tracing}
+\section{Authentication}
+
+\chapter{Securing Rest}
+\section{TLS}
+\section{Authentication vs Authorization}
+\section{Basic Auth}
+\section{Bearer Auth}
+\section{Cookies vs Headers}
+\section{Mutual TLS}
+\section{Backdoors for Testing}
+\section{CORS Preflight}
+\section{OIDC, OAuth}
+\section{Zero Trust vs Segregated Environment}
+
+\chapter{REST Architecture}
+\section{Architecture}
+\section{API Gateways}
+Apigee, API Gateway, Tyk.io
+\section{CQRS}
+\section{Websockets}
+
+\chapter{Alternative Modeling}
+\section{Swagger 2}
+\section{RAML}
+\section{WRML}
+\section{API Blueprint}
+
+\chapter{Appendix}
+\section{Monolithic Decomposition}
+\section{Microservices and Containers}
+\section{FaaS}
+
+
+%% TODO:
+%% Review case study placement
+%% Build skip fail if file unlinked
+
 \input{bib}
 
 
