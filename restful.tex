@@ -96,11 +96,15 @@
 \pagenumbering{gobble}
 \maketitle
 
+\pagestyle{empty}
+
 \frontmatter
 \tableofcontents
 \clearpage
 \input{chapters/dedication}
 \clearpage
+
+\pagestyle{plain}
 
 \input{chapters/ch0_preface}
 
@@ -125,24 +129,39 @@ What client -> who to update?
 \section{Tracing}
 \section{Authentication}
 
-\chapter{Securing Rest}
-\section{TLS}
+\chapter{Securing Your Traffic}
+\section{TLS and MitM}
+\section{TLS Issuance Services}
+letsencrypt.org
+\section{Self Signed Certificates}
+\section{SSL is Dead, Long Live SSL}
+TLS vs SSL.  POODL, SSL v3 is dead topic.
+
+\chapter{Securing Identity}
 \section{Authentication vs Authorization}
 \section{Basic Auth}
 \section{Bearer Auth}
-\section{Cookies vs Headers}
+What is a JWT?
 \section{Mutual TLS}
-\section{Backdoors for Testing}
-\section{CORS Preflight}
 \section{OIDC, OAuth}
+
+\chapter{Browser Awareness}
+\section{Cookies vs Headers}
+\section{CORS Preflight}
+\section{Options Denied!}
+Why can't I hit my API from swagger?
+
+\chapter{Secure Architecture with CI/CD}
+\section{Continuous Integration, Continuous Delivery}
+\section{Backdoors for Testing}
 \section{Zero Trust vs Segregated Environment}
 
-\chapter{REST Architecture}
+\chapter{REST Deployment Architecture}
 \section{Architecture}
 \section{API Gateways}
 Apigee, API Gateway, Tyk.io
 \section{CQRS}
-\section{Websockets}
+\section{Eventing and Websockets}
 
 \chapter{Alternative Modeling}
 \section{Swagger 2}
@@ -154,11 +173,11 @@ Apigee, API Gateway, Tyk.io
 \section{Monolithic Decomposition}
 \section{Microservices and Containers}
 \section{FaaS}
-
+\section{Library Modeled in Open API 3.0}
 
 %% TODO:
-%% Review case study placement
 %% Build skip fail if file unlinked
+%% Hammer in a why can't I hit my endpoint?
 
 \input{bib}
 
