@@ -14,10 +14,10 @@ Three options commonly available:
 
 My recommendation will be that you place the version in the URL, so \textit{/v2/books/book-id}.  The benefits include:
 \begin{itemize}
-  \item Our site access logs will include both the version of the API and the HTTP status code, so we can tell if we're getting errors on the old API we built or the new.
-  \item We can document multiple versions within the same Open API 3.0 contract.
+  \item Our site access logs will include both the version of the API and the HTTP status code, so we can quickly tell if we're getting HTTP status errors from an old version or a newer one, particularly during updates to our API suite.
+  \item We can document multiple versions within the same Open API 3.0 contract document.
   \item An API Gateway can easily route traffic based on URL.
   \item Common REST frameworks, such as Spring Boot, can isolate controllers by version of the API.  This will allow one application to process both contract versions.
 \end{itemize}
 
-Our choice of placing the version into the URL is Art over Science, as all three flavors of versioning are viable.  The most important takeaway is that you plan for change and have versioning prepared in your API contract at the very first iteration.  I warn that there are architects who will disagree with this approach and expect the version to be described as an HTTP header because the version is contextual, and they're right.  There are others that will want the version to be placed in the domain, so they can manage routing the request by domain, and they too are right.
+Our choice of placing the version into the URL is Art over Science, as all three flavors of versioning are viable.  The most important takeaway is that you plan for change and have versioning prepared in your API contract at the very first iteration.  I warn that there are architects who will disagree with the recommendation to include version in the URL and expect the version to be an HTTP header because the version is contextual; they're right.  There are others that will want the version to be placed in the domain, so they can manage routing the request by domain; they too are right.

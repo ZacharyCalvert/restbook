@@ -113,7 +113,7 @@ Eventually, server developers started adopting frameworks such as ASP.NET (C++) 
 
 \includegraphics{jsps}
 
-Anyone with experience building JSPs and ASPs knows it actually works a little different, such as JSP and Java getting compiled into a single .class file which is treated as both the renderer and the engine, but for the history lesson, the process is more important than the actual artifact.
+Anyone with experience building JSPs and ASPs knows it actually works a little different, such as the JSP is compiled into a single Java .class file which is treated as both the renderer and the engine, but for the history lesson, the process is more important than the actual artifact.
 
 With this update, we began the process of isolating calculated output from the rendered view.  It was our first step into MVC (Model-View-Controller), but we still faced issues of page content becoming more and more complex being tailored to more and more browsers.  More than that, we had a nasty problem of scale.  In this situation, the server receiving the request would have to do the work, build the page, and fire the reply in a timely manner.  To scale, we needed to enable server-to-server communication.
 
@@ -188,17 +188,26 @@ This is still before mobile phones are a thing.  The web continues to grow and u
 
 The problem compounds as the page complexity grows and now you have browser-friendly XML APIs and server SOAP APIs.  Inevitably the clients on both browsers and servers, for browser-to-server and server-to-server communication needs to become more consistent and more consumer friendly.  Concurrently to all of this nasty fragmentation, browser engineers start forcing the issue with JavaScript Object Notation (JSON).
 
+
+\begin{minipage}{\linewidth}
+
 In quick succession, smart (and staffed) companies pull this stunt:
 
 \includegraphics{js1}
+
+\end{minipage}
+
+\begin{minipage}{\linewidth}
 
 followed by
 
 \includegraphics{js2}
 
+\end{minipage}
+
 Next step was just to standardize the JSON APIs, getting to that convention-over-configuration that offers enough consistency to feel common but malleable enough to answer business requirements without feeling like hammering a square peg into a round hole.  REST is the chosen victor in our arena.
 
-Ultimately, it rapidly progresses into something luxurious that supports mobile clients, browser clients, internal server-clients, customer servers, API gateway proxies, geo-distributed content delivery networks (CDNs), with RESTful APIs providing the majority of server-state to all interested consumers.
+From there, teams rapidly progressed into deployments that supported client consumers including mobile, browser, internal servers, third party servers, and API gateway proxies with RESTful APIs providing the majority of resource-state to all interested consumers.
 
 \includegraphics{modern}
 

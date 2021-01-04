@@ -8,6 +8,7 @@ To provide a quick preview, HTTP GET is object retrieval or collection search, a
 
 HTTP POST is meant for resource creation.  HTTP PUT is for resource update \textit{or resource creation}.  HTTP DELETE is for deletions or cancellation.  Finally, HTTP PATCH should be used for a sparsely filled updates against large resources, or content that is easier for the client to update portions of the resource instead of the whole resource.  Expect a much more thorough explanation in the coming chapters.
 
+\begin{minipage}{\linewidth}
 \begin{sidebar}
 \begin{center}
 \textbf{Security First}
@@ -16,6 +17,7 @@ HTTP POST is meant for resource creation.  HTTP PUT is for resource update \text
 The security aspects of designing a RESTful API are presented within this book after presenting the foundational concepts.  This is not the correct approach to take when designing an API.  Security must be a first class citizen when preparing RESTful services.  Whether secured via an API gateway enforcing access controls or building a zero-trust network of microservices, know your security approach before you start implementing.  Retrofitting security into insecure APIs is a mistake and one that could cost your company dearly.  Your clients will need to know your identity provider, you will need to know how to validate the principal, you will need to know how to determine level of authorization, and you will need to have a plan for non-prod test accounts and test credential automation for integration testing.
 
 \end{sidebar}
+\end{minipage}
 
 \emph{Method Summary:}
 

@@ -1,4 +1,4 @@
-\chapter{First Models}
+\chapter{Endpoint Models}
 
 \section{REST GET}
 
@@ -103,9 +103,10 @@ BookSearchResultPage:
 \end{code}
 \end{minipage}
 
-And to enable our consumers to make use of the paging result, we'll update our search endpoint:
 
 \begin{minipage}{\linewidth}
+And to enable our consumers to make use of the paging result, we'll update our search endpoint:
+
 \begin{code}
 \begin{lstlisting}[belowskip=-\baselineskip]
 /v1/books:
@@ -140,7 +141,7 @@ And to enable our consumers to make use of the paging result, we'll update our s
 
 \begin{itemize}
   \item HTTP GET is for read only services and must not trigger object state change (side effects)
-  \item Model your resource URLs such that they are relative in the path when related, such as our \textit{/v1/books/\{isbn\}/copies}
+  \item Model your resource URLs such that they are relative in the path when related and sensible for the consumer, such as our \textit{/v1/books/\{isbn\}/copies}
   \item When uniquely identifying a resource, the ID belongs on the URL path.  When filtering or searching for a matching set of resources, use query parameters.
 \end{itemize}
 
