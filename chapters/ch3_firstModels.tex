@@ -142,10 +142,47 @@ And to enable our consumers to make use of the paging result, we'll update our s
 \begin{itemize}
   \item HTTP GET is for read only services and must not trigger object state change (side effects)
   \item Model your resource URLs such that they are relative in the path when related and sensible for the consumer, such as our \textit{/v1/books/\{isbn\}/copies}
-  \item When uniquely identifying a resource, the ID belongs on the URL path.  When filtering or searching for a matching set of resources, use query parameters.
+  \item When uniquely identifying a resource, the ID belongs on the URL path.  When filtering or searching for a matching set of resources, use query parameters against the collection endpoint you are filtering from.  In our search case, we're searching against books, so our URL is based off of \textit{/v1/books/} .
 \end{itemize}
 
 \section{REST POST}
+
+When interacting with CRUD operations (Create, Read, Update, Delete) POST is typically regarded as the create operation.
+
+\textit{I as an Admin need to create a book so that I may prepare incoming purchased books for borrowing.}
+
+Knowing we have already modeled our book collection as \textit{/v1/books}, we simply need to review our Book resource, verify it is sufficient for operations including fetch and creation, and document the endpoint.  Sounds simple right?  Here is the list of headaches you will likely encounter when modeling resource creation, which we will discuss in detail.
+
+\begin{itemize}
+  \item Do we allow the user to provide the resource ID or must the server maintain control of the uniqueness for the endpoint?  In our case, ISBN is defined outside of our system's control, but when modeling say a shopping cart, would the server own the UUID generation or would we allow our client to dictate?  How would ID collisions be handled, say if user A created book ISBN 123 and user B created book ISBN 123?
+  \item Do we allow for creation on the collection resource, such as POST to \textit{/v1/books} or enforce that creation happens against the unique resource label, such as \textit{/v1/books/isbn}?
+  \item How do we address data which we need at resource creation time, but not for read (GET) results? Say when creating a book we wanted to enforce restrictions that the book be assigned a number of copies for the library, so that any book in the system must have greater than one copy, how can we support that?
+  \item Can we address mistakes, such as a user double-click operation from poorly written UIs, or users abusing the back button to review and re-submit a book creation?
+\end{itemize}
+
+The problem of "do we allow the user to create the resource ID or does the server generate the resource ID" is fairly straightforward to answer.  When in doubt, the server should generate the resulting resource ID and it should be unique enough that data crawlers and hackers can't simply walk through your URLs and obtain all of the data.  The only time it should be considered permissible for the client to provide the resource ID is if it is \textbf{both public and non-sensitive}.  If the ID is both sensitive and to be provided by the client, say their social security number, you \textbf{should not be using this sensitive ID as a component of your URL label.}
+
+When in doubt, and where possible, server-side should generate the resource identifier.  Without meaning to, resource IDs tend to become sensitive in nature, say for account creation, or shopping cart identification, or order numbers.  In the case that the user must provide an ID which is to map out to something they must provide, such as a social security number, the resource should be exchanged for a server-generated resource label which is server-side stored in secured storage.
+
+\begin{sidebar}
+\begin{center}
+\textbf{Fatally Flawed Resource IDs}
+\end{center}
+When designing server-generated or client-generated resource IDs, be very, very careful to consider their use and accessibility.  If they are short, or numerical, or time-based labels, or address labels, they will be crawled by data miners.  Labeling resources like \textit{/post/1}, \textit{/post/2}, \textit{/post/3} is a surefire way to have all of your data pulled down.  It happens in really ugly ways, such as schools using Social Security Numbers for identifying students and their grades.  A script kiddie can craft curl commands to run through the 9-digit social security numbers in a few days with a small-sized botnet.
+
+The site Parler's data dump was performed by data miners who were able to identify a pattern for incremental identifier increases. \cite{Jennings}
+
+\begin{displayquote}
+It [Parler] even ordered its posts by number in the site's URLs, so that anyone could have easily, programmatically downloaded the site's millions of posts
+\end{displayquote}
+
+Regardless of your feelings for the site, the poorly designed resource pattern allowed for very quick retrieval of a significant portion of data generated on the site before it was taken offline in 2021.  \textbf{do not use incremental resource IDs, short resource IDs, or publicly known resource IDs for accessing any non-public, private, or sensitive content.}
+
+\end{sidebar}
+
+%TODO How do we address data which we need at resource creation time, but not for read (GET) results? Say when creating a book we wanted to enforce restrictions that the book be assigned a number of copies for the library, so that any book in the system must have greater than one copy, how can we support that?
+%TODO Can we address mistakes, such as a user double-click operation from poorly written UIs, or users abusing the back button to review and re-submit a book creation?
+
 \section{REST PUT}
 \section{Idempotent PUT vs POST}
 \section{REST PATCH}
