@@ -5,7 +5,8 @@ on:
   pull_request:
 
 jobs:
-  check-links:
+  write-book:
+    name: Build Restful PDF
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
