@@ -1,0 +1,810 @@
+openapi: 3.2.0
+info:
+  title: Library Management API
+  description: |-
+    This is an example API modeled for Zach Calvert's Designing, Modeling, and Securing RESTful APIs
+  contact:
+    email: ZachCalvert@gmail.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about the author.
+  url: https://www.zachcalvert.com
+servers:
+  - url: https://notfunctional.zachcalvert.com/api/v1
+    description: Non-existing demoware server (OAS 3.2)
+tags:
+  - name: book
+    description: Registering book details including ISBN, author, publisher, copyright.
+  - name: copies
+    description: Copy asset management, for check-in or check-out
+  - name: utility
+    description: Utilith methods, specifically cross origin resource sharing (CORS)
+paths:
+  /v1/books:
+    query:
+      tags:
+      - book
+      summary: Find a book
+      operationId: searchBooks
+      parameters:
+      - $ref: '#/components/parameters/ClientID'
+      - $ref: '#/components/parameters/ClientSupport'
+      - $ref: '#/components/parameters/traceparent'
+      requestBody:
+        description: Perform a library query to find a book or set of books
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/BookQuery'
+                - $ref: '#/components/schemas/BookQueryCursor'
+      responses:
+        '202':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Query processing.  Refer back with the cursorId at a later time for the initial starting page.  This result may be returned while a cursor is still being prepared, or upon initial query request should the query be too complex to deliver a cursor page immediately.  
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursorId:
+                    type: string
+        '200':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Query page retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookQueryResult'
+    post:
+      tags:
+      - book
+      summary: Add a new book definition for the library
+      operationId: createBook
+      parameters:
+      - $ref: '#/components/parameters/ClientID'
+      - $ref: '#/components/parameters/ClientSupport'
+      - $ref: '#/components/parameters/traceparent'
+      requestBody:
+        description: Create a new book definition for the library
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '400':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Missing required fields for creating book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '401':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Missing credentials for user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '403':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: User is not admin and is not privileged to create books
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '409':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: ISBN is already in use and may not be reused.  Book cannot be created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '201':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Book created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+    options:
+      tags:
+        - utility
+      summary: CORS preflight
+      description: Returns allowable HTTP methods, origins, and headers for cross-origin requests.
+      responses:
+        '204':
+          description: No Content. Success.
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+            Access-Control-Allow-Origin:
+              description: Allowed UI origins.
+              schema:
+                type: string
+                example: 'https://ui.example.com'
+            Access-Control-Allow-Methods:
+              description: Methods supported for books
+              schema:
+                type: string
+                example: 'GET, QUERY, POST, PUT, OPTIONS'
+            Access-Control-Allow-Headers:
+              description: Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request.
+              schema:
+                type: string
+                example: 'Content-Type, Authorization, X-Client-ID'
+            Access-Control-Max-Age:
+              description: Indicates how long the results of a CORS request can be cached.
+              schema:
+                type: string
+                example: '86400'
+  /v1/books/{isbn}:
+    get:
+      tags:
+        - book
+      summary: Retrieve information about a Book by ISBN
+      operationId: getBookDetails
+      parameters:
+      - $ref: '#/components/parameters/ClientID'
+      - $ref: '#/components/parameters/ClientSupport'
+      - $ref: '#/components/parameters/traceparent'
+      - name: isbn
+        in: path
+        description: ISBN-13 book identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Book found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Book ISBN not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+    put:
+      tags:
+      - book
+      summary: Edit or repair fields for an existing book
+      operationId: editBook
+      parameters:
+      - $ref: '#/components/parameters/ClientID'
+      - $ref: '#/components/parameters/ClientSupport'
+      - $ref: '#/components/parameters/traceparent'
+      - name: isbn
+        in: path
+        description: ISBN-13 book identifier (path must match book definition)
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Edit information about a book
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '200':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Book edited successfully
+        '400':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Invalid or missing values provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '401':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Missing credentials for user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '403':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: User is not admin and is not privileged to edit books
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+    options:
+      tags:
+        - utility
+      summary: CORS preflight
+      description: Returns allowable HTTP methods, origins, and headers for cross-origin requests.
+      parameters:
+      - name: isbn
+        in: path
+        description: ISBN-13 book identifier (path must match book definition)
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content. Success.
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+            Access-Control-Allow-Origin:
+              description: Allowed UI origins.
+              schema:
+                type: string
+                example: 'https://ui.example.com'
+            Access-Control-Allow-Methods:
+              description: Methods supported for books
+              schema:
+                type: string
+                example: 'GET, QUERY, POST, PUT, OPTIONS'
+            Access-Control-Allow-Headers:
+              description: Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request.
+              schema:
+                type: string
+                example: 'Content-Type, Authorization, X-Client-ID'
+            Access-Control-Max-Age:
+              description: Indicates how long the results of a CORS request can be cached.
+              schema:
+                type: string
+                example: '86400'
+  /v1/books/{isbn}/copies:
+    get:
+      tags:
+      - copies
+      summary: Retrieve available copies of a given Book
+      operationId: retrieveAvailability
+      parameters:
+      - $ref: '#/components/parameters/ClientID'
+      - $ref: '#/components/parameters/ClientSupport'
+      - $ref: '#/components/parameters/traceparent'
+      - name: isbn
+        in: path
+        description: ISBN-13 book identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ISBN found, server able to identify available copies of book identified by ISBN.
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookAvailability'
+    put:
+      tags:
+      - copies
+      summary: Change the status of a copy of a book
+      operationId: editAvailability
+      parameters:
+      - $ref: '#/components/parameters/ClientID'
+      - $ref: '#/components/parameters/ClientSupport'
+      - $ref: '#/components/parameters/traceparent'
+      - name: isbn
+        in: path
+        description: ISBN-13 book identifier
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Change the status of a copy
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCopy'
+      responses:
+        '204':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Success in changing the book copy's status.
+    post:
+      tags:
+      - copies
+      summary: Add a new copy of a given book
+      operationId: createBookCopy
+      parameters:
+      - $ref: '#/components/parameters/ClientID'
+      - $ref: '#/components/parameters/ClientSupport'
+      - $ref: '#/components/parameters/traceparent'
+      - name: isbn
+        in: path
+        description: ISBN-13 book identifier
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Create a new copy for checking out from the library
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCopyBarcode'
+      responses:
+        '400':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Missing data for creating book copy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '201':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Book created successfully
+    options:
+      tags:
+        - utility
+      summary: CORS preflight
+      description: Returns allowable HTTP methods, origins, and headers for cross-origin requests.
+      parameters:
+      - name: isbn
+        in: path
+        description: ISBN-13 book identifier (path must match book definition)
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content. Success.
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+            Access-Control-Allow-Origin:
+              description: Allowed UI origins.
+              schema:
+                type: string
+                example: 'https://ui.example.com'
+            Access-Control-Allow-Methods:
+              description: Methods supported for books
+              schema:
+                type: string
+                example: 'GET, QUERY, POST, PUT, OPTIONS'
+            Access-Control-Allow-Headers:
+              description: Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request.
+              schema:
+                type: string
+                example: 'Content-Type, Authorization, X-Client-ID'
+            Access-Control-Max-Age:
+              description: Indicates how long the results of a CORS request can be cached.
+              schema:
+                type: string
+                example: '86400'
+  /v1/books/{isbn}/copies/{barcode}:
+    delete:
+      tags:
+        - copies
+      operationId: deleteBookCopy
+      parameters:
+      - $ref: '#/components/parameters/ClientID'
+      - $ref: '#/components/parameters/ClientSupport'
+      - $ref: '#/components/parameters/traceparent'
+      - name: isbn
+        in: path
+        description: ISBN-13 book identifier
+        required: true
+        schema:
+          type: string
+      - name: barcode
+        in: path
+        description: Book copy's barcode identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '404':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Book copy not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '204':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Success in deleting the book copy.
+    patch:
+      tags:
+      - copies
+      summary: Change the status of a copy of a book
+      operationId: changeAvailability
+      parameters:
+      - $ref: '#/components/parameters/ClientID'
+      - $ref: '#/components/parameters/ClientSupport'
+      - $ref: '#/components/parameters/traceparent'
+      - name: isbn
+        in: path
+        description: ISBN-13 book identifier
+        required: true
+        schema:
+          type: string
+      - name: barcode
+        in: path
+        description: Book copy's barcode identifier
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Change the status of a copy
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCopy'
+      responses:
+        '204':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Success in changing the book copy's status.
+        '400':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Fields invalid or edits invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+        '404':
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+          description: Could not find book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDetails'
+    options:
+      tags:
+        - utility
+      summary: CORS preflight
+      description: Returns allowable HTTP methods, origins, and headers for cross-origin requests.
+      parameters:
+      - name: isbn
+        in: path
+        description: ISBN-13 book identifier (path must match book definition)
+        required: true
+        schema:
+          type: string
+      - name: barcode
+        in: path
+        description: Book copy's barcode identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content. Success.
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
+            Access-Control-Allow-Origin:
+              description: Allowed UI origins.
+              schema:
+                type: string
+                example: 'https://ui.example.com'
+            Access-Control-Allow-Methods:
+              description: Methods supported for books
+              schema:
+                type: string
+                example: 'GET, QUERY, POST, PUT, OPTIONS'
+            Access-Control-Allow-Headers:
+              description: Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request.
+              schema:
+                type: string
+                example: 'Content-Type, Authorization, X-Client-ID'
+            Access-Control-Max-Age:
+              description: Indicates how long the results of a CORS request can be cached.
+              schema:
+                type: string
+                example: '86400'
+components:
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT  # Optional hint to the client that it's a JWT
+  headers:
+    RateLimitHeader:
+      description: Remaining requests quota
+      schema:
+        type: integer
+    traceparent:
+      required: false
+      example: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+      description: W3 standard traceparent header combining version, trace-id, parent-id (span ID), and trace flags.
+      schema:
+        type: string
+    tracestate:
+      required: false
+      example: vendor1=opaque,vendor2=alsoopaque
+      description: W3 standard tracestate header
+      schema:
+        type: string
+  parameters:
+    ClientID:
+      name: X-Client-ID
+      in: header
+      required: true
+      example: mycompany-auto-scraper_v1.2
+      description: Client caller identification for diagnostics
+      schema:
+        type: string
+    ClientSupport:
+      name: X-Client-Support
+      in: header
+      required: false
+      example: maintenance@mycompany.com
+      description: Contact information for support engagements or upgrade discussions.
+      schema:
+        type: string
+    traceparent:
+      name: traceparent
+      in: header
+      required: false
+      example: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+      description: W3 standard traceparent header combining version, trace-id, parent-id (span ID), and trace flags.
+      schema:
+        type: string
+    tracestate:
+      name: tracestate
+      in: header
+      required: false
+      example: vendor1=opaque,vendor2=alsoopaque
+      description: W3 standard tracestate header
+      schema:
+        type: string
+        
+  schemas:
+    ErrorDetails:
+      type: object
+      properties:
+        displayCode:
+          type: string
+          enum: 
+            - UNKNOWN
+            - BADCREDENTIALS
+            - ISBN_COLLISION
+        debugMessage:
+          type: string
+    Book:
+      type: object
+      properties:
+        isbn:
+          type: string
+          description: International Standard Book Number
+          example: 978-1119096726
+        title:
+          type: string
+          description: Book title
+          example: Applied Cryptography
+        authors:
+          type: array
+          items:
+            type: string
+            example: ["Bruce Schneier"]
+        copyrightDate:
+          type: integer
+          example: 2015
+    BookQueryResult:
+      type: object
+      properties:
+        cursorId:
+          type: string
+        totalPages:
+          type: number
+          minumum: 0
+        totalResults:
+          type: number
+          minimum: 0
+        searchPage:
+          type: object
+          $ref: '#/components/schemas/BookQueryPage'
+    BookQueryPage:
+      type: object
+      properties:
+        page:
+          type: number
+          minimum: 0
+        pageResult:
+          type: array
+          items: 
+            $ref: '#/components/schemas/Book'
+    BookQuery:
+      type: object
+      properties:
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchCollection'
+    SearchCollection:
+      type: object
+      properties:
+        condition:
+          type: string
+          enum:
+          - and
+          - or
+        filters:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/SearchCollection'
+              - $ref: '#/components/schemas/SearchFilter'
+    SearchFilter:
+      type: object
+      properties:
+        excludeResults:
+          type: boolean
+        keyword:
+          type: string
+        after:
+          type: string
+          format: date
+          example: "1990-01-01"
+        before:
+          type: string
+          format: date
+          example: "2001-01-01"
+        category:
+          type: string
+    BookQueryCursor:
+      type: object
+      properties:
+        id:
+          type: string
+        page:
+          type: number
+          minimum: 0
+    BookCopy:
+      type: object
+      properties:
+        isbn:
+          type: string
+          description: International Standard Book Number
+          example: 978-1119096726
+        barcode:
+          type: string
+          description: Copy identifier used for scanning and unique text copy result.
+        status:
+          schema:
+            type: string
+            enum:
+              - available
+              - reserved
+              - borrowed
+    BookCopyBarcode:
+      type: object
+      properties:
+        barcode:
+          type: string
+          description: Copy identifier used for scanning and unique text copy result.
+    BookAvailability:
+      type: object
+      properties:
+        isbn:
+          type: string
+          description: International Standard Book Number
+          example: 978-1119096726
+        available:
+          type: integer
+          minimum: 0
+          description: Available copies for checkout or reservation, ranging from 0 to N
+        checkedOut:
+          type: integer
+          minimum: 0
+          description: Total copies checked out
+    BookSearchResultPage:
+      type: object
+      properties:
+        totalMatches:
+          type: integer
+          description: Total number of matched books
+        limit:
+          type: integer
+          description: Maximum number of books returned in a paged result
+        offset:
+          type: integer
+          description: Matching Book offset for pagination
+        books:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+          description: Matching books
+
+security:
+  - JWT: []
