@@ -171,6 +171,13 @@ paths:
               schema:
                 type: string
                 example: '86400'
+        '405':
+          description: Request not allowed from this domain.
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
   /v1/books/{isbn}:
     get:
       tags:
@@ -312,6 +319,13 @@ paths:
               schema:
                 type: string
                 example: '86400'
+        '405':
+          description: Request not allowed from this domain.
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
   /v1/books/{isbn}/copies:
     get:
       tags:
@@ -449,6 +463,13 @@ paths:
               schema:
                 type: string
                 example: '86400'
+        '405':
+          description: Request not allowed from this domain.
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
   /v1/books/{isbn}/copies/{barcode}:
     delete:
       tags:
@@ -592,6 +613,13 @@ paths:
               schema:
                 type: string
                 example: '86400'
+        '405':
+          description: Request not allowed from this domain.
+          headers:
+            traceparent:
+              description: trace-context header
+              schema:
+                $ref: '#/components/headers/traceparent'
 components:
   securitySchemes:
     JWT:
