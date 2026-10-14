@@ -4,7 +4,7 @@ This is the repository for Zach Calvert's
 
  _Designing, Modeling, and Securing RESTful APIs_
 
-a RESTful engineering guide for API designersf and integration engineering leads.
+a RESTful engineering guide for API designers and integration engineering leads.
 
 # Commands
 
