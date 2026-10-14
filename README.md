@@ -1,9 +1,10 @@
 # Welcome
 
 This is the repository for Zach Calvert's 
- Designing, Modeling, and Securing RESTful APIs
 
-a work started in 2017 and completed in 2026.  
+ _Designing, Modeling, and Securing RESTful APIs_
+
+a RESTful engineering guide for API designersf and integration engineering leads.
 
 # Commands
 
