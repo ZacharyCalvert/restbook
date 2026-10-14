@@ -1,0 +1,17 @@
+@startuml
+!theme crt-green
+actor "User" as user
+agent "BFF" as bff
+agent "Book Details API" as dt
+agent "Book Edit API" as edit
+database "Books" as bc
+database "Book Read Replicas" as rr
+user -down-> bff : Book read requests\nand book edits\n(example edit: add book command)
+bff -down-> edit : Edit book processing
+edit -down-> bc
+bc -> rr : Replication
+bff -down-> dt : Get book state\nBook searches
+dt -down-> rr : Read book details
+
+
+@enduml

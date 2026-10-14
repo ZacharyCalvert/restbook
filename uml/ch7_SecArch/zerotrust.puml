@@ -1,0 +1,20 @@
+@startuml
+!theme crt-green
+agent Browser
+agent iOS
+agent Android
+agent Server
+collections "API Gateway" as gateway
+collections  "REST API 1" as r1
+collections  "REST API 2" as r2
+collections  "REST API 3" as r3
+Browser --> gateway : Bearer Token
+iOS --> gateway : Bearer Token
+Android --> gateway : Bearer Token
+Server --> gateway : Mutual TLS
+gateway <--> r1 : Mutual TLS
+gateway <--> r2 : Mutual TLS
+gateway <--> r3 : Mutual TLS
+r1 <--> r2 : Mutual TLS
+r2 <--> r3 : Mutual TLS
+@enduml

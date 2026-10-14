@@ -1,0 +1,14 @@
+@startuml
+!theme crt-green
+actor "User" as user
+agent "BFF" as bff
+agent "User Details API" as dt
+agent "Book API" as book
+agent "Book Copy API" as bc
+user -down-> bff : Check book details and availability page
+bff -down-> dt : Confirm user can checkout
+bff -down-> book : Fetch book details
+bff -down-> bc : Fetch book availability
+
+
+@enduml

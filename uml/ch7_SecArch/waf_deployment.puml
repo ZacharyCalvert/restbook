@@ -1,0 +1,15 @@
+@startuml
+!theme crt-green
+
+agent Customer
+agent Hacker as iOS
+agent "Botnet" as Android
+agent "Automated\nClient" as Server
+collections "Web Application Firewall" as gateway
+collections  "REST API" as r1
+Customer --> gateway
+iOS --> gateway
+Android --> gateway
+Server --> gateway
+gateway --> r1
+@enduml

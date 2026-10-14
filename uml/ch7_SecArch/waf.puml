@@ -1,0 +1,15 @@
+@startuml
+!theme crt-green
+participant "Client" as client
+participant "Web Application Firewall" as waf
+participant "REST API" as rest
+client -> waf : Request
+waf -> waf : Handle TLS negotiation
+waf -> waf : Inspect for malicious payloads
+waf -> waf : Enforce API Specification
+waf -> waf : Validate authentication (JWT)
+waf -> rest : Deliver request
+rest -> waf : Response
+waf -> client : Response
+
+@enduml

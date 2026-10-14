@@ -1,0 +1,14 @@
+@startuml
+!theme crt-green
+participant "Browser" as User
+participant "Service"
+participant "Identity\nProvider" as idp
+User -> idp : Load auth page
+idp -> User : Credentials form
+User -> idp : Credentials
+idp -> User : JWT
+User -> Service : Authentication: Bearer <JWT>
+Service -> Service : Validate JWT
+Service -> Service : Do operation
+Service -> User : Response
+@enduml

@@ -1,0 +1,6 @@
+@startuml  csrf.puml
+!theme crt-green
+User -> BadSite : Load page
+BadSite -> User : Malicious page
+User -> BankSite : User submits form\nMalicious page delivers form POST to BankSite\nExisting authentication used
+@enduml

@@ -1,0 +1,4 @@
+@startuml
+"Tab1: siteA" -> "siteB" : Request
+"siteB" --> "Tab1: siteA": Response
+@enduml

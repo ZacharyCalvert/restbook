@@ -1,0 +1,16 @@
+@startuml
+!theme crt-green
+participant "Client" as client
+participant "Back-End for Front End" as bff
+participant "User Service" as auth
+participant "Book Service" as books
+participant "Book Doc Store" as store
+client -> bff : Query books
+bff -> auth : Validate user privileges
+auth -> bff : Valid
+bff -> books : Perform query
+books -> store : Fetch top 100 matching this query
+store -> books : Results
+books -> bff : Results
+bff -> client : Query result
+@enduml

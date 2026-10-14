@@ -1,0 +1,15 @@
+@startuml
+!theme crt-green
+participant "site-ui.example.com" as ui
+participant "Browser" as browser
+participant "site-api.example.com" as api
+
+ui -> browser: Send this request to \napi endpoint "/v1/books"
+browser -> api: HTTP OPTIONS to "/v1/books"\nOrigin: https://site-ui.example.com
+api -> browser: HTTP/1.1 204 No Content\nAccess-Control-Allow-Origin: https://site-ui.example.com\nAccess-Control-Allow-Methods: GET, POST, PUT, OPTIONS\nAccess-Control-Allow-Headers: Content-Type, Authorization, X-Client-Id\nAccess-Control-Allow-Credentials: true
+browser -> ui: Proceed!
+ui -> api: Original request to "/v1/books"
+api -> api: processing
+api -> ui: Response
+
+@enduml

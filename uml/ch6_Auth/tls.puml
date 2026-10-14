@@ -1,0 +1,9 @@
+@startuml
+!theme crt-green
+participant Browser as Client
+participant Server
+Client->Server: Client details (TLS Version requested, Cipher Suites)
+Server->Server: Choose TLS Version & Cipher Suite
+Server->Client: Chosen TLS Version, Cipher Suite\nServer Certificate (Public Key)
+Client->Client: Review issuer certificate public key\nVerify Certificate
+@enduml

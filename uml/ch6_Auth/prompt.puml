@@ -1,0 +1,16 @@
+@startuml
+!theme crt-green
+participant "User"
+participant "Service"
+participant "Identity\nProvider" as idp
+User -> Service : Load page
+Service -> Service : No Auth Detected
+Service -> User : Send to identity provider
+User -> idp : Load auth page
+idp -> User : Prompt for user and pass
+User -> idp : Credentials
+idp -> User : MFA challenge
+User -> idp : MFA token
+idp -> User : Credentials
+User -> Service : Load page + credentials
+@enduml

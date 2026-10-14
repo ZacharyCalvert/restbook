@@ -1,0 +1,31 @@
+@startuml
+!theme crt-green
+
+participant Client
+participant Server
+
+
+== Network Hello ==
+Client -> Server: Supported TLS version and cipher suites supported by client
+
+Server -> Client: Selected cipher suite\nServer Key Share
+Server -> Client: Server's Public Key\nDigital Signature from Authority
+Server -> Client: Cryptographic signature proving ownership of the private key
+
+== Authority/Trust Verification ==
+box PublicCertificate
+    Client -> Client: Look up Authority Certificate in local trust store
+    Client -> Client: Verify Digital Signature on Server Certificate\nCheck expiration date\nCheck domain name match (service name matches signed certificate)
+    alt Verification Succeeds
+        note over Client: Server identity is Trusted
+    else Verification Fails
+        Client -> Server: Alert: Handshake Failure (Connection Closed)
+    end
+box rect
+
+== Exchange Keys ==
+Client -> Server: Key calculation for decryption
+Server -> Client: Key calculation for decryption
+note over Client, Server: Both sides now have the shared secret key for network encryption\nwithout ever sending it over the network.
+
+@enduml

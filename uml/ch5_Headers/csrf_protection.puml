@@ -1,0 +1,9 @@
+@startuml
+!theme crt-green
+User -> BadSite : Load page
+BadSite -> User : Malicious page
+User -> BankSite : User submits form\nMalicious page delivers form POST to BankSite\nExisting authentication used
+BankSite -> BankSite : Inspect session cookies\nSuccess
+BankSite -> BankSite : Inspect required CSRF Header\nFailure!
+BankSite -> User : 403 Forbidden
+@enduml
